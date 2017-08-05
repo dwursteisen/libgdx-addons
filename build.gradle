@@ -1,0 +1,44 @@
+apply plugin: 'kotlin'
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "java"
+
+group = 'com.github.dwursteisen.libgdx'
+
+buildscript {
+    ext {
+        kotlinVersion = '1.1.3-2'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+    }
+}
+
+targetCompatibility = '1.7'
+sourceCompatibility = '1.7'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+ext {
+    projectGroup = "libgdx-addons"
+    gdxVersion = "1.9.6"
+    jUnitVersion = "4.12"
+    mockitoVersion = "1.10.19"
+}
+
+dependencies {
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
+
+    testCompile "junit:junit:$jUnitVersion"
+    testCompile "org.mockito:mockito-core:$mockitoVersion"
+}
+
