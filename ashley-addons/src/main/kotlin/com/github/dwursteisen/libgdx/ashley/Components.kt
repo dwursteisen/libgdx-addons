@@ -1,5 +1,21 @@
 package com.github.dwursteisen.libgdx.ashley
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.Vector2
 
-class State(var state: Int, var time: Long = 0) : Component
+data class StateComponent(var state: Int = 0,
+                          @JvmField
+                          var time: Float = 0f
+) : Component {
+    fun get() = state
+    fun set(s: Int) {
+        state = s
+    }
+}
+data class TextureComponent(var texture: TextureRegion) : Component
+
+data class Position(val value: Vector2 = Vector2()) : Component
+data class Size(val value: Vector2 = Vector2()) : Component
+data class Direction(val value: Vector2 = Vector2()) : Component
+data class Rotation(var degree: Float, val origin: Vector2 = Vector2()) : Component

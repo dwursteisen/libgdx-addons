@@ -1,2 +1,3 @@
 include 'ashley-addons'
+include 'libgdx'
 
