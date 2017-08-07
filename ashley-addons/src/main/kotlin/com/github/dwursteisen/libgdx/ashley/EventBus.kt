@@ -11,6 +11,7 @@ interface EventListener {
     fun onEvent(event: Event, eventData: EventData)
 }
 
+// FIXME: I should be abble to target multiple stuff at once
 data class EventData(var target: Entity? = null, var body: Any? = null)
 data class EventTimer(var timer: Float = 0f, val event: Event, val data: EventData)
 
@@ -46,7 +47,7 @@ class EventBus {
 
     private val NO_DATA = EventData()
 
-    private var listeners: MutableMap<Event, EventListener> = mutableMapOf()
+    private var listeners: MutableMap<Event, List<EventListener>> = mutableMapOf()
 
     private var emitter: MutableList<Pair<Event, EventData>> = mutableListOf()
 
@@ -71,7 +72,15 @@ class EventBus {
 
 
     fun register(eventListener: EventListener, vararg events: Event): Unit {
-        events.forEach { listeners.put(it, eventListener) }
+        events.forEach {
+            listeners.compute(it, { evt, lst ->
+                if (lst == null) {
+                    listOf(eventListener)
+                } else {
+                    lst + eventListener
+                }
+            })
+        }
     }
 
 
@@ -80,8 +89,8 @@ class EventBus {
         emitterLatter.forEach { it.timer -= delta }
         val toEmitNow = emitterLatter.filter { it.timer < 0 }
 
-        toEmitNow.forEach { listeners[it.event]?.onEvent(it.event, it.data) }
-        emitter.forEach { listeners[it.first]?.onEvent(it.first, it.second) }
+        toEmitNow.forEach { listeners[it.event]?.forEach({ lst -> lst.onEvent(it.event, it.data) }) }
+        emitter.forEach { listeners[it.first]?.forEach({ lst -> lst.onEvent(it.first, it.second) }) }
 
         emitterLatter.removeAll(toEmitNow)
         emitter.clear()
