@@ -22,11 +22,15 @@ sourceCompatibility = '1.7'
 
 repositories {
     mavenCentral()
+
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
+    compile 'com.github.libktx.ktx:ktx-log:1.9.6-b6'
+
 }
 
 compileKotlin {

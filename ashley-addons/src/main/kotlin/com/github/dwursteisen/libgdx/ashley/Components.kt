@@ -6,7 +6,8 @@ import com.badlogic.gdx.math.Vector2
 
 data class StateComponent(var state: Int = 0,
                           @JvmField
-                          var time: Float = 0f
+                          var time: Float = 0f,
+                          var status: EntityState = EntityState.STATE_NOP
 ) : Component {
     fun get() = state
     fun set(s: Int) {
