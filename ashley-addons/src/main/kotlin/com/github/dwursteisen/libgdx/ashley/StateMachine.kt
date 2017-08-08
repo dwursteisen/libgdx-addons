@@ -8,11 +8,13 @@ import com.badlogic.ashley.systems.IteratingSystem
 import ktx.log.info
 
 
-typealias Transition = (entity: Entity) -> Unit
+typealias Transition = (entity: Entity, event: EventData) -> Unit
 typealias Event = Int
 
+private val NO_EVENT_DATA = EventData()
+
 abstract class EntityState {
-    open fun enter(entity: Entity, machine: StateMachineSystem) {
+    open fun enter(entity: Entity, machine: StateMachineSystem, eventData: EventData) {
 
     }
 
@@ -20,7 +22,7 @@ abstract class EntityState {
 
     }
 
-    open fun exit(entity: Entity, machine: StateMachineSystem) {
+    open fun exit(entity: Entity, machine: StateMachineSystem, eventData: EventData) {
 
     }
 
@@ -88,31 +90,32 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
     }
 
     fun startWith(state: EntityState) {
-        onState(EntityState.STATE_NOP).default({ entity -> go(state, entity) })
+        onState(EntityState.STATE_NOP).default({ entity, _ -> go(state, entity) })
     }
 
-    fun go(newState: EntityState, entity: Entity) {
+
+    fun go(newState: EntityState, entity: Entity, event: EventData = NO_EVENT_DATA) {
         val entityState = entity[state]
 
-        info("STATE_MACHINE", { -> "Exit ${entityState.status::class.java}" })
-        entityState.status.exit(entity, this)
+        info("STATE_MACHINE", { -> "Exit ${entityState.status::class.java.simpleName}" })
+        entityState.status.exit(entity, this, event)
 
         entityState.status = newState
-        info("STATE_MACHINE", { -> "Enter ${entityState.status::class.java}" })
-        entityState.status.enter(entity, this)
+        info("STATE_MACHINE", { -> "Enter ${entityState.status::class.java.simpleName}" })
+        entityState.status.enter(entity, this, event)
     }
 
 
     fun emit(event: Event) = emit(event, EventData())
 
     fun emit(event: Event, eventData: EventData) {
-        entities.forEach { perform(event, it) }
+        entities.forEach { perform(event, it, eventData) }
     }
 
-    private fun perform(event: Event, entity: Entity): Unit {
+    private fun perform(event: Event, entity: Entity, eventData: EventData): Unit {
         val entityState = entity[state].status
         val transition: Transition? = transitions[entityState]?.get(event) ?: defaultTransition[entityState]
-        transition?.invoke(entity)
+        transition?.invoke(entity, eventData)
     }
 
     override fun onEvent(event: Event, eventData: EventData) {
@@ -120,7 +123,7 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
         if (target == null) {
             emit(event, eventData)
         } else {
-            perform(event, target)
+            perform(event, target, eventData)
         }
     }
 }
