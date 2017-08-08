@@ -109,7 +109,10 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
     fun emit(event: Event) = emit(event, EventData())
 
     fun emit(event: Event, eventData: EventData) {
-        entities.forEach { perform(event, it, eventData) }
+        for (index in 0..entities.size()-1) {
+            val it = entities[index]
+            perform(event, it, eventData)
+        }
     }
 
     private fun perform(event: Event, entity: Entity, eventData: EventData): Unit {

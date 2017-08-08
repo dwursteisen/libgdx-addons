@@ -23,7 +23,7 @@ class PackrPlugin : Plugin<Project> {
             val config = PackrConfig()
             config.platform = exts.platform ?: findCurrentSystem()
             config.jdk = exts.jdk ?: currentJavaHome()
-            config.executable = exts.executable ?: project.displayName
+            config.executable = exts.executable ?: project.name
             config.classpath = (exts.classpath ?: emptyArray<String>()).toList()
 
             config.mainClass = exts.mainClass

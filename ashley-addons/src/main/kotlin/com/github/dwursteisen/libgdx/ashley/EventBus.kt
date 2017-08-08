@@ -50,8 +50,10 @@ class EventBus {
     private var listeners: MutableMap<Event, List<EventListener>> = mutableMapOf()
 
     private var emitter: MutableList<Pair<Event, EventData>> = mutableListOf()
+    private var emitterMirror: MutableList<Pair<Event, EventData>> = mutableListOf()
 
     private var emitterLatter: MutableList<EventTimer> = mutableListOf()
+    private var emitterLatterMirror: MutableList<EventTimer> = mutableListOf()
 
     fun emit(event: Event, entity: Entity, data: EventData = NO_DATA): Unit {
         emit(event, data.copy(target = entity))
@@ -89,11 +91,17 @@ class EventBus {
         emitterLatter.forEach { it.timer -= delta }
         val toEmitNow = emitterLatter.filter { it.timer < 0 }
 
-        toEmitNow.forEach { listeners[it.event]?.forEach({ lst -> lst.onEvent(it.event, it.data) }) }
-        emitter.forEach { listeners[it.first]?.forEach({ lst -> lst.onEvent(it.first, it.second) }) }
+        emitterLatterMirror.addAll(toEmitNow)
+        emitterMirror.addAll(emitter)
+
+        emitterLatterMirror.forEach { listeners[it.event]?.forEach({ lst -> lst.onEvent(it.event, it.data) }) }
+        emitterMirror.forEach { listeners[it.first]?.forEach({ lst -> lst.onEvent(it.first, it.second) }) }
 
         emitterLatter.removeAll(toEmitNow)
         emitter.clear()
+
+        emitterMirror.clear()
+        emitterLatterMirror.clear()
 
     }
 }
