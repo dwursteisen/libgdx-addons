@@ -12,6 +12,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
+        // you can grab the lastest version here: https://jitpack.io/#dwursteisen/libgdx-addons
         classpath "com.github.dwursteisen.libgdx:aseprite-plugin:<lastest>"
     }
 }
@@ -36,7 +37,7 @@ task aseprite(type: com.github.dwursteisen.libgdx.aseprite.AsepriteTask, group: 
 Setup Gradle to know where it should locate Aseprite : 
 
 
-Configure it using `aseprite.exec` property (ie: in your` ~/.gradle/gradle.properties)
+Configure it using `aseprite.exec` property (ie: in your` ~/.gradle/gradle.properties`)
 ```
 aseprite.exec=<path to exec>
 ```
@@ -49,7 +50,7 @@ aseprite {
 ```
 
 
-MacOS specific : point to aseprite located into `<aseprite directory>/Aseprite.app/Contents/MacOS/aseprite
+MacOS specific : point to aseprite located into `<aseprite directory>/Aseprite.app/Contents/MacOS/aseprite`
 
 ## How to configure a task ?
 
