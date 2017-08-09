@@ -1,4 +1,5 @@
 include 'ashley-addons'
 include 'core-addons'
 include 'packr-plugin'
+include 'aseprite-plugin'
 
