@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.Pool
 
 
 interface EventListener {
@@ -12,24 +13,39 @@ interface EventListener {
 }
 
 // FIXME: I should be abble to target multiple stuff at once
-data class EventData(var event: Int = Int.MIN_VALUE, var target: Entity? = null, var body: Any? = null)
+class EventData(var event: Int = Int.MIN_VALUE, var target: Entity? = null, var body: Any? = null) : Pool.Poolable {
+    override fun reset() {
+        event = Int.MIN_VALUE
+        target = null
+        body = null
+    }
+}
+
 data class EventTimer(var timer: Float = 0f, val event: Event, val data: EventData)
+
 
 class EventBus {
 
+    private val pool: Pool<EventData> = object : Pool<EventData>() {
+        override fun newObject(): EventData = EventData()
+    }
+
     class EventInputProcessor(val bus: EventBus) : InputAdapter() {
 
-        private val keyEventData = EventData()
-        private val screenTouchData = EventData(body = Vector2())
+        private val touch = Vector2()
 
         override fun keyDown(keycode: Int): Boolean {
+            val keyEventData = bus.createEventData()
             keyEventData.body = keycode
             bus.emit(StateMachineSystem.EVENT_KEY, keyEventData)
             return super.keyDown(keycode)
         }
 
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-            (screenTouchData.body as Vector2).set(screenX.toFloat(), screenY.toFloat())
+
+            val screenTouchData = bus.createEventData()
+            touch.set(screenX.toFloat(), screenY.toFloat())
+            screenTouchData.body = touch
             bus.emit(StateMachineSystem.EVENT_TOUCHED, screenTouchData)
             return super.touchDown(screenX, screenY, pointer, button)
         }
@@ -55,20 +71,26 @@ class EventBus {
     private var emitterLatter: MutableList<EventTimer> = mutableListOf()
     private var emitterLatterMirror: MutableList<EventTimer> = mutableListOf()
 
+    fun createEventData(): EventData = pool.obtain()
+
     fun emit(event: Event, entity: Entity, data: EventData = NO_DATA): Unit {
-        emit(event, data.copy(target = entity))
+        data.target = entity
+        emit(event, data)
     }
 
     fun emit(event: Event, data: EventData = NO_DATA): Unit {
-        emitter.add(event to data.copy(event = event))
+        data.event = event
+        emitter.add(event to data)
     }
 
     fun emitLater(delta: Float, event: Event, entity: Entity, data: EventData = NO_DATA): Unit {
-        emitLater(delta, event, data.copy(target = entity))
+        data.target = entity
+        emitLater(delta, event, data)
     }
 
     fun emitLater(delta: Float, event: Event, data: EventData = NO_DATA): Unit {
-        val timer = EventTimer(delta, event, data.copy(event = event))
+        data.event = event
+        val timer = EventTimer(delta, event, data)
         emitterLatter.add(timer)
     }
 
@@ -97,8 +119,12 @@ class EventBus {
         emitterLatterMirror.forEach { listeners[it.event]?.forEach({ lst -> lst.onEvent(it.event, it.data) }) }
         emitterMirror.forEach { listeners[it.first]?.forEach({ lst -> lst.onEvent(it.first, it.second) }) }
 
+        val eventDataToReset = toEmitNow.map { it.data } + emitter.map { it.second }
+
         emitterLatter.removeAll(toEmitNow)
         emitter.clear()
+
+        eventDataToReset.forEach { pool.free(it) }
 
         emitterMirror.clear()
         emitterLatterMirror.clear()
