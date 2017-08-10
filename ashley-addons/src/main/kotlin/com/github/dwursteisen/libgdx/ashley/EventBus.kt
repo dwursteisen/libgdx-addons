@@ -12,7 +12,7 @@ interface EventListener {
 }
 
 // FIXME: I should be abble to target multiple stuff at once
-data class EventData(var target: Entity? = null, var body: Any? = null)
+data class EventData(var event: Int = Int.MIN_VALUE, var target: Entity? = null, var body: Any? = null)
 data class EventTimer(var timer: Float = 0f, val event: Event, val data: EventData)
 
 class EventBus {
@@ -60,7 +60,7 @@ class EventBus {
     }
 
     fun emit(event: Event, data: EventData = NO_DATA): Unit {
-        emitter.add(event to data)
+        emitter.add(event to data.copy(event = event))
     }
 
     fun emitLater(delta: Float, event: Event, entity: Entity, data: EventData = NO_DATA): Unit {
@@ -68,7 +68,7 @@ class EventBus {
     }
 
     fun emitLater(delta: Float, event: Event, data: EventData = NO_DATA): Unit {
-        val timer = EventTimer(delta, event, data)
+        val timer = EventTimer(delta, event, data.copy(event = event))
         emitterLatter.add(timer)
     }
 

@@ -71,6 +71,12 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
 
 
     class OnState(val state: EntityState, val parent: StateMachineSystem) {
+
+        fun on(events: List<Int>, block: Transition): OnState {
+            events.forEach { on(it, block) }
+            return this
+        }
+
         fun on(event: Int, block: Transition): OnState {
 
             var currentTransitions = parent.transitions[state] ?: emptyMap()
