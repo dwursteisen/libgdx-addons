@@ -11,6 +11,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4'
     }
 }
 
@@ -23,7 +24,7 @@ sourceCompatibility = '1.7'
 
 repositories {
     mavenCentral()
-
+    jcenter()
     maven { url 'https://jitpack.io' }
 }
 
@@ -31,6 +32,24 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
     compile 'com.github.libktx.ktx:ktx-log:1.9.6-b6'
+
+    // specs
+    testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testCompile ('org.jetbrains.spek:spek-api:1.1.2') {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+    testRuntime ('org.jetbrains.spek:spek-junit-platform-engine:1.1.2') {
+        exclude group: 'org.junit.platform'
+        exclude group: 'org.jetbrains.kotlin'
+    }
+    testRuntime "org.junit.platform:junit-platform-launcher:1.0.0-M4"
+
+    // https://mvnrepository.com/artifact/org.assertj/assertj-core
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.8.0'
+
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.8.47'
+
 
 }
 
@@ -41,6 +60,15 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.6"
 }
 
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+junitPlatform {
+    filters {
+        engines {
+            include 'spek'
+        }
+    }
+}
 
 publishing {
     publications {

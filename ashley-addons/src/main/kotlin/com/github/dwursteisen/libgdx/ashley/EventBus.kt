@@ -61,8 +61,6 @@ class EventBus {
         }
     }
 
-    private val NO_DATA = EventData()
-
     private var listeners: MutableMap<Event, List<EventListener>> = mutableMapOf()
 
     private var emitter: MutableList<Pair<Event, EventData>> = mutableListOf()
@@ -73,22 +71,22 @@ class EventBus {
 
     fun createEventData(): EventData = pool.obtain()
 
-    fun emit(event: Event, entity: Entity, data: EventData = NO_DATA): Unit {
+    fun emit(event: Event, entity: Entity, data: EventData = createEventData()): Unit {
         data.target = entity
         emit(event, data)
     }
 
-    fun emit(event: Event, data: EventData = NO_DATA): Unit {
+    fun emit(event: Event, data: EventData = createEventData()): Unit {
         data.event = event
         emitter.add(event to data)
     }
 
-    fun emitLater(delta: Float, event: Event, entity: Entity, data: EventData = NO_DATA): Unit {
+    fun emitLater(delta: Float, event: Event, entity: Entity, data: EventData = createEventData()): Unit {
         data.target = entity
         emitLater(delta, event, data)
     }
 
-    fun emitLater(delta: Float, event: Event, data: EventData = NO_DATA): Unit {
+    fun emitLater(delta: Float, event: Event, data: EventData = createEventData()): Unit {
         data.event = event
         val timer = EventTimer(delta, event, data)
         emitterLatter.add(timer)
