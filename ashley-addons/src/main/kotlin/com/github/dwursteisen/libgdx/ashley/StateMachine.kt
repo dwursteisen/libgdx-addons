@@ -115,7 +115,7 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
     }
 
     fun startWith(state: EntityState) {
-        onState(EntityState.STATE_NOP).default({ entity, _ -> go(state, entity) })
+        onState(EntityState.STATE_NOP).default({ entity, data -> go(state, entity, data) })
     }
 
 
@@ -143,6 +143,7 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
     }
 
     private fun perform(event: Event, entity: Entity, eventData: EventData): Unit {
+        eventData.event = event
         usingState(entity) { state ->
             val entityState = state.status
             val transition: Transition? = transitions[entityState]?.get(event) ?: defaultTransition[entityState]

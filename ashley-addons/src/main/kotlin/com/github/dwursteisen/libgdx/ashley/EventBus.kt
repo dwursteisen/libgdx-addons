@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
+import ktx.log.debug
 
 
 interface EventListener {
@@ -24,7 +25,15 @@ class EventData(var event: Int = Int.MIN_VALUE, var target: Entity? = null, var 
 data class EventTimer(var timer: Float = 0f, val event: Event, val data: EventData)
 
 
-class EventBus {
+/**
+ * Simple Event bus.
+ *
+ * - register listener through register method
+ * - The update method should be called from the main loop
+ *
+ *
+ */
+class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
 
     private val pool: Pool<EventData> = object : Pool<EventData>() {
         override fun newObject(): EventData = EventData()
@@ -78,6 +87,7 @@ class EventBus {
 
     fun emit(event: Event, data: EventData = createEventData()): Unit {
         data.event = event
+        debug { "will emit ${eventMapper[event] ?: "??"} (id : ${event})" }
         emitter.add(event to data)
     }
 
@@ -114,18 +124,24 @@ class EventBus {
         emitterLatterMirror.addAll(toEmitNow)
         emitterMirror.addAll(emitter)
 
-        emitterLatterMirror.forEach { listeners[it.event]?.forEach({ lst -> lst.onEvent(it.event, it.data) }) }
-        emitterMirror.forEach { listeners[it.first]?.forEach({ lst -> lst.onEvent(it.first, it.second) }) }
+        emitterMirror.forEach({ debug { "emit ${eventMapper[it.first] ?: "??"} (id : ${it.first})" } })
+
+        emitterLatterMirror.forEach { invoke(it.event, it.data) }
+        emitterMirror.forEach { invoke(it.first, it.second) }
 
         val eventDataToReset = toEmitNow.map { it.data } + emitter.map { it.second }
 
         emitterLatter.removeAll(toEmitNow)
-        emitter.clear()
+        emitter.removeAll(emitterMirror)
 
         eventDataToReset.forEach { pool.free(it) }
 
         emitterMirror.clear()
         emitterLatterMirror.clear()
 
+    }
+
+    private fun invoke(event: Event, data: EventData) {
+        listeners[event]?.forEach({ lst -> lst.onEvent(event, data) })
     }
 }
