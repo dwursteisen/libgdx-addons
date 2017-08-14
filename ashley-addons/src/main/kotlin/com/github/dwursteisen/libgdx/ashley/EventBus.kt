@@ -129,7 +129,7 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
         emitterLatterMirror.forEach { invoke(it.event, it.data) }
         emitterMirror.forEach { invoke(it.first, it.second) }
 
-        val eventDataToReset = toEmitNow.map { it.data } + emitter.map { it.second }
+        val eventDataToReset = toEmitNow.map { it.data } + emitterMirror.map { it.second }
 
         emitterLatter.removeAll(toEmitNow)
         emitter.removeAll(emitterMirror)
