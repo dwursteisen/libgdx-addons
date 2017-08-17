@@ -31,13 +31,23 @@ open class AsepriteTask : DefaultTask() {
 
     var outputDirectory: File? = null
 
+    var baseDirectory: File? = null
+
     @OutputFiles
     var outputFiles: FileCollection? = null
         get() {
             if (outputDirectory == null) {
                 return null
             }
-            val inp = inputFiles?.map { File(outputDirectory?.absolutePath + "/" + it.nameWithoutExtension + ".png") }
+            val inp = inputFiles?.map {
+                val base = baseDirectory
+                if (base != null) {
+                    val prefix = it.relativeTo(base)
+                    File(outputDirectory?.absolutePath + "/" + prefix.canonicalPath + "/" + it.nameWithoutExtension + ".png")
+                } else {
+                    File(outputDirectory?.absolutePath + "/" + it.nameWithoutExtension + ".png")
+                }
+            }
             return project.files(inp)
         }
         private set
