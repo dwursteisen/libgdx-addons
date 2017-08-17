@@ -42,8 +42,8 @@ open class AsepriteTask : DefaultTask() {
             val inp = inputFiles?.map {
                 val base = baseDirectory
                 if (base != null) {
-                    val prefix = it.relativeTo(base)
-                    File(outputDirectory?.absolutePath + "/" + prefix.canonicalPath + "/" + it.nameWithoutExtension + ".png")
+                    val prefix = it.absolutePath.replace(base.absolutePath, "").replaceAfterLast("/", "")
+                    File(outputDirectory?.absolutePath + prefix + "/" + it.nameWithoutExtension + ".png")
                 } else {
                     File(outputDirectory?.absolutePath + "/" + it.nameWithoutExtension + ".png")
                 }
@@ -99,9 +99,17 @@ MacOS specific : point to aseprite located into <aseprite directory>/Aseprite.ap
             args += "--verbose"
         }
 
+        val base = baseDirectory
+        val path = if (base != null) {
+            val prefix = input.absolutePath.replace(base.absolutePath, "").replaceAfterLast("/", "")
+            File(outputDirectory?.absolutePath + prefix + "/" + input.nameWithoutExtension)
+        } else {
+            File(outputDirectory?.absolutePath + "/" + input.nameWithoutExtension)
+        }
+
         if (json) {
             args += "--data"
-            args += outputDirectory?.absolutePath + "/" + input.nameWithoutExtension + ".json"
+            args += path.absolutePath + ".json"
             args += "--format"
             args += format.format
         }
@@ -110,7 +118,7 @@ MacOS specific : point to aseprite located into <aseprite directory>/Aseprite.ap
         args += scale.toString()
 
         args += "--sheet"
-        args += outputDirectory?.absolutePath + "/" + input.nameWithoutExtension + ".png"
+        args += path.absolutePath + ".png"
 
         args += input.absolutePath
 
