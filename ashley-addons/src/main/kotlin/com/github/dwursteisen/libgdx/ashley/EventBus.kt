@@ -105,13 +105,12 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
 
     fun register(eventListener: EventListener, vararg events: Event): Unit {
         events.forEach {
-            listeners.compute(it, { evt, lst ->
-                if (lst == null) {
-                    listOf(eventListener)
-                } else {
-                    lst + eventListener
-                }
-            })
+            val lst = listeners[it]
+            if (lst == null) {
+                listeners.put(it, listOf(eventListener))
+            } else {
+                listeners.put(it, lst + eventListener)
+            }
         }
     }
 
