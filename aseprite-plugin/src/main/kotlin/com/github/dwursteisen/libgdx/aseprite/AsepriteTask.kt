@@ -112,6 +112,8 @@ MacOS specific : point to aseprite located into <aseprite directory>/Aseprite.ap
             args += path.absolutePath + ".json"
             args += "--format"
             args += format.format
+            args += "--list-slices"
+            args += "--list-tags"
         }
 
         args += "--scale"
