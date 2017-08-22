@@ -41,7 +41,8 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
 
     class EventInputProcessor(val bus: EventBus) : InputAdapter() {
 
-        private val touch = Vector2()
+        private val touchDown = Vector2()
+        private val touchUp = Vector2()
 
         override fun keyDown(keycode: Int): Boolean {
             val keyEventData = bus.createEventData()
@@ -53,10 +54,18 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
 
             val screenTouchData = bus.createEventData()
-            touch.set(screenX.toFloat(), screenY.toFloat())
-            screenTouchData.body = touch
+            touchDown.set(screenX.toFloat(), screenY.toFloat())
+            screenTouchData.body = touchDown
             bus.emit(StateMachineSystem.EVENT_TOUCHED, screenTouchData)
             return super.touchDown(screenX, screenY, pointer, button)
+        }
+
+        override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+            val screenTouchData = bus.createEventData()
+            touchDown.set(screenX.toFloat(), screenY.toFloat())
+            screenTouchData.body = touchDown to touchUp
+            bus.emit(StateMachineSystem.EVENT_SLIDE, screenTouchData)
+            return super.touchUp(screenX, screenY, pointer, button)
         }
     }
 

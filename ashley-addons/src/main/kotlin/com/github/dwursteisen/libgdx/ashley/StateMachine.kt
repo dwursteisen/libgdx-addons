@@ -57,7 +57,8 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
     companion object {
         val EVENT_NOP = -1
         val EVENT_TOUCHED = -2
-        val EVENT_KEY = -3
+        val EVENT_SLIDE = -3
+        val EVENT_KEY = -4
     }
 
 
