@@ -62,7 +62,7 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
 
         override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
             val screenTouchData = bus.createEventData()
-            touchDown.set(screenX.toFloat(), screenY.toFloat())
+            touchUp.set(screenX.toFloat(), screenY.toFloat())
             screenTouchData.body = touchDown to touchUp
             bus.emit(StateMachineSystem.EVENT_SLIDE, screenTouchData)
             return super.touchUp(screenX, screenY, pointer, button)
