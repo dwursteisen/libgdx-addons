@@ -52,7 +52,7 @@ open class AsepriteTask : DefaultTask() {
         }
         private set
 
-    var scale: Int = 1
+    var scale: Double = 1.0
 
     var format: AsepriteFormat = AsepriteFormat.HASH
 
@@ -95,6 +95,8 @@ MacOS specific : point to aseprite located into <aseprite directory>/Aseprite.ap
 
         val exec = aseprite.absolutePath
         var args = listOf(exec, "-b")
+        args += input.absolutePath
+
         if (verbose) {
             args += "--verbose"
         }
@@ -116,13 +118,18 @@ MacOS specific : point to aseprite located into <aseprite directory>/Aseprite.ap
             args += "--list-tags"
         }
 
-        args += "--scale"
-        args += scale.toString()
 
-        args += "--sheet"
-        args += path.absolutePath + ".png"
+        if (scale != 1.0) {
+            args += "--scale"
+            args += scale.toString()
 
-        args += input.absolutePath
+            args += "--save-as"
+            args += path.absolutePath + ".png"
+        } else {
+            args += "--sheet"
+            args += path.absolutePath + ".png"
+        }
+
 
         logger.debug("Aseprite command line : $args")
         return args
