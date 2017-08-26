@@ -116,7 +116,11 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
     }
 
     fun startWith(state: EntityState) {
-        onState(EntityState.STATE_NOP).default({ entity, data -> go(state, entity, data) })
+        startWith({ entity, data -> go(state, entity, data) })
+    }
+
+    fun startWith(transition: Transition) {
+        onState(EntityState.STATE_NOP).default(transition)
     }
 
 
