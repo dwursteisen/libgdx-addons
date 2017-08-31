@@ -92,6 +92,11 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
 
     class OnState(val state: EntityState, val parent: StateMachineSystem) {
 
+        fun on(vararg events: Int, block: Transition): OnState {
+            events.forEach { on(it, block) }
+            return this
+        }
+
         fun on(events: List<Int>, block: Transition): OnState {
             events.forEach { on(it, block) }
             return this
