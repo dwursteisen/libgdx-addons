@@ -37,3 +37,8 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.6"
 }
+
+test {
+    // exclude tests for CI as there is no screen attached
+    exclude 'com/github/dwursteisen/libgdx/test/**'
+}
