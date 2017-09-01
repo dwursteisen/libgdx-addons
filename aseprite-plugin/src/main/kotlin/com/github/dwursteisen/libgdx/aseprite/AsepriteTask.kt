@@ -122,13 +122,10 @@ MacOS specific : point to aseprite located into <aseprite directory>/Aseprite.ap
         if (scale != 1.0) {
             args += "--scale"
             args += scale.toString()
-
-            args += "--save-as"
-            args += path.absolutePath + ".png"
-        } else {
-            args += "--sheet"
-            args += path.absolutePath + ".png"
         }
+
+        args += "--sheet"
+        args += path.absolutePath + ".png"
 
 
         logger.debug("Aseprite command line : $args")
