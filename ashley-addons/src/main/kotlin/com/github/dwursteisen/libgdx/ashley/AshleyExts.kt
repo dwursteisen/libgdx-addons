@@ -24,5 +24,7 @@ inline fun <reified T : Component> PooledEngine.createComponentWith(block: T.() 
 
 fun Engine.entity(component: Class<out Component>): Entity = this.getEntitiesFor(Family.all(component).get()).first()
 
+fun Engine.removeAll(entities: Iterable<Entity>): Unit = entities.forEach { this.removeEntity(it) }
+
 
 
