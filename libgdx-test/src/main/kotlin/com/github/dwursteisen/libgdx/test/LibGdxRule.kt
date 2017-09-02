@@ -18,7 +18,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
-class LibGdxRule(val listener: ApplicationListener, val configuration: LwjglApplicationConfiguration) : TestRule {
+class LibGdxRule(val listener: ApplicationListener, val configuration: LwjglApplicationConfiguration, val output: String = LibGdxRule::class.java.getResource(".").path) : TestRule {
 
 
     companion object {
@@ -103,7 +103,7 @@ class LibGdxRule(val listener: ApplicationListener, val configuration: LwjglAppl
                                             BufferUtils.copy(pixels, 0, pixmap.pixels, pixels.size)
 
                                             Gdx.app.log("LIBGDX-TEST", "Start build screenshot")
-                                            val external = Gdx.files.external(action.name)
+                                            val external = Gdx.files.absolute(output + action.name)
                                             PixmapIO.writePNG(external, pixmap)
                                             pixmap.dispose()
                                             Gdx.app.log("LIBGDX-TEST", "Screenshot created at ${external.path()}")
