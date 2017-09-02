@@ -25,8 +25,16 @@ class GameTest {
                 .wait(Duration.ofSeconds(1))
                 .release(Input.Keys.UP)
                 .screenshot("test2.png")
-                .wait(Duration.ofSeconds(2))
-                .screenshot("test3.png")
+        //.wait(Duration.ofSeconds(1))
+        //.screenshot("test3.png")
+    }
+
+    @Test
+    fun runOtherTest() {
+        gdx.startGame()
+                .wait(Duration.ofSeconds(1))
+                .screenshot("test4.png")
+
     }
 
 }
