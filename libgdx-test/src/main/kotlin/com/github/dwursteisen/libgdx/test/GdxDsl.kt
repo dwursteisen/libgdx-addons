@@ -78,13 +78,13 @@ class GdxDsl(private val rule: LibGdxRule) {
         return this;
     }
 
-    fun record(): GdxDsl {
-        notYetImplemented()
+    fun startRecord(): GdxDsl {
+        rule.add(InputAction.StartRecord())
         return this;
     }
 
-    fun stopRecord(): GdxDsl {
-        notYetImplemented()
+    fun stopAndSaveRecord(filename: String): GdxDsl {
+        rule.add(InputAction.StopRecord(filename))
         return this
     }
 

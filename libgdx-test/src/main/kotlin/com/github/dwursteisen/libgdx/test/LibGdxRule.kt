@@ -68,31 +68,31 @@ class LibGdxRule(val listener: ApplicationListener, val configuration: LwjglAppl
                 if (executor == null) {
                     val thread = Thread() {
                         while (isRunning.get()) {
-                            queue.firstOrNull()?.let { action ->
-                                when (action) {
+                            queue.firstOrNull()?.run {
+                                when (this) {
                                     is InputAction.Wait -> {
-                                        action.duration -= 0.010f
-                                        if (action.duration < 0f) {
+                                        this.duration -= 0.010f
+                                        if (this.duration < 0f) {
                                             queue = queue.drop(1)
                                         }
                                     }
                                     is InputAction.Push -> {
-                                        sender.keyDown(action.key)
+                                        sender.keyDown(this.key)
                                         queue = queue.drop(1)
 
                                     }
                                     is InputAction.Release -> {
-                                        sender.keyUp(action.key)
+                                        sender.keyUp(this.key)
                                         queue = queue.drop(1)
 
                                     }
                                     is InputAction.Type -> {
-                                        sender.keyTyped(action.char)
+                                        sender.keyTyped(this.char)
                                         queue = queue.drop(1)
                                     }
 
                                     is InputAction.Touch -> {
-                                        sender.touchDown(action.x, action.y, 1, Input.Buttons.LEFT)
+                                        sender.touchDown(this.x, this.y, 1, Input.Buttons.LEFT)
                                         queue = queue.drop(1)
                                     }
 
@@ -103,7 +103,7 @@ class LibGdxRule(val listener: ApplicationListener, val configuration: LwjglAppl
                                             BufferUtils.copy(pixels, 0, pixmap.pixels, pixels.size)
 
                                             Gdx.app.log("LIBGDX-TEST", "Start build screenshot")
-                                            val external = Gdx.files.absolute(output + action.name)
+                                            val external = Gdx.files.absolute(output + this.name)
                                             PixmapIO.writePNG(external, pixmap)
                                             pixmap.dispose()
                                             Gdx.app.log("LIBGDX-TEST", "Screenshot created at ${external.path()}")
@@ -112,6 +112,15 @@ class LibGdxRule(val listener: ApplicationListener, val configuration: LwjglAppl
                                     }
 
 
+                                    is InputAction.StartRecord -> {
+                                        delegate?.startRecord()
+                                        queue = queue.drop(1)
+                                    }
+
+                                    is InputAction.StopRecord -> {
+                                        delegate?.stopRecord(output + this.filename)
+                                        queue = queue.drop(1)
+                                    }
                                     is InputAction.Quit -> {
                                         quitLatch.countDown()
                                         queue = queue.drop(1)

@@ -37,4 +37,14 @@ class GameTest {
 
     }
 
+    @Test
+    fun record() {
+        gdx.startGame()
+                .startRecord()
+                .push(Input.Keys.UP)
+                .wait(Duration.ofSeconds(1))
+                .release(Input.Keys.UP)
+                .stopAndSaveRecord("record.gif")
+    }
+
 }
