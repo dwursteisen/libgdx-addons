@@ -132,7 +132,7 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
         emitterLatterMirror.addAll(toEmitNow)
         emitterMirror.addAll(emitter)
 
-        emitterMirror.forEach({ debug { "emit ${eventMapper[it.first] ?: "??"} (id : ${it.first})" } })
+        debug { emitterMirror.map { "emit ${eventMapper[it.first] ?: "??"} (id : ${it.first})" }.joinToString("\n") }
 
         emitterLatterMirror.forEach { invoke(it.event, it.data) }
         emitterMirror.forEach { invoke(it.first, it.second) }
