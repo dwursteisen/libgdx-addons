@@ -152,7 +152,7 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
         }
     }
 
-    private fun perform(event: Event, entity: Entity, eventData: EventData): Unit {
+    private fun perform(event: Event, entity: Entity, eventData: EventData) {
         eventData.event = event
         usingState(entity) { state ->
             val entityState = state.status
@@ -163,6 +163,9 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
     }
 
     override fun onEvent(event: Event, eventData: EventData) {
+        if(!checkProcessing()) {
+            return
+        }
         val target = eventData.target
 
         if (target == null) {
