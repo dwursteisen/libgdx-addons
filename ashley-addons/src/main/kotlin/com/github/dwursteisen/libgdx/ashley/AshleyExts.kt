@@ -27,8 +27,11 @@ fun Engine.entity(vararg component: Class<out Component>): Entity = this.getEnti
 fun Engine.removeAll(entities: Iterable<Entity>): Unit = entities.forEach { this.removeEntity(it) }
 
 fun Engine.removeAllWith(vararg components: Class<out Component>) {
-    val entities = this.getEntitiesFor(Family.all(*components).get())
-    removeAll(entities)
+    val entities = this.getEntitiesFor(Family.all(*components).get()).toList()
+    for(e in entities) {
+        this.removeEntity(e)
+    }
+            //removeAll(entities)
 }
 
 
