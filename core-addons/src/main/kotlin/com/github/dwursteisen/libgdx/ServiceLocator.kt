@@ -10,7 +10,7 @@ object ServiceLocator {
    }
 
    inline fun <reified T> locate(): T {
-       return this.get(T::class.java)
+       return this[T::class.java]
    }
 
    fun register(instance: Any, clazz: Class<out Any>) {

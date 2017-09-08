@@ -1,7 +1,5 @@
 package com.github.dwursteisen.libgdx.test
 
-import jdk.internal.util.xml.impl.Input
-
 internal sealed class InputAction {
     class Wait(var duration: Float) : InputAction()
     class Push(val key: Int) : InputAction()
