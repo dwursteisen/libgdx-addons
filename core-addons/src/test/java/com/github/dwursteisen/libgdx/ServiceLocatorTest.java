@@ -11,7 +11,7 @@ public class ServiceLocatorTest {
     public void register() {
         Random random = new Random();
 
-        ServiceLocator.register(random, Random.class);
+        ServiceLocator.INSTANCE.register(random, Random.class);
         Random fromServiceLocator = ServiceLocator.INSTANCE.get(Random.class);
 
         Assert.assertSame(random, fromServiceLocator);
