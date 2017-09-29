@@ -60,6 +60,9 @@ open class AsepriteTask : DefaultTask() {
 
     var verbose: Boolean = false
 
+    var sheet_height: Int? = null
+    var sheet_width: Int? = null
+
     @TaskAction
     fun export(input: IncrementalTaskInputs) {
         val exec = getExecActionFactory().newExecAction()
@@ -122,6 +125,17 @@ MacOS specific : point to aseprite located into <aseprite directory>/Aseprite.ap
         if (scale != 1.0) {
             args += "--scale"
             args += scale.toString()
+        }
+
+        if (sheet_width != null) {
+            args += "--sheet-width"
+            args += "$sheet_width"
+        }
+
+        if (sheet_height != null) {
+            args += "--sheet-height"
+            args += "$sheet_height"
+
         }
 
         args += "--sheet"
