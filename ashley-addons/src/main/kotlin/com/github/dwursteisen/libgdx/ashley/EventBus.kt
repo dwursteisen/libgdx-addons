@@ -100,6 +100,14 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
         emitter.add(event to data)
     }
 
+    fun emit(event: Event, vararg entities: Entity, data: EventData = createEventData()) {
+        entities.forEach {
+            val cpy = createEventData()
+            cpy.body = data.body
+            emit(event, it, cpy)
+        }
+    }
+
     fun emitLater(delta: Float, event: Event, entity: Entity, data: EventData = createEventData()) {
         data.target = entity
         emitLater(delta, event, data)
