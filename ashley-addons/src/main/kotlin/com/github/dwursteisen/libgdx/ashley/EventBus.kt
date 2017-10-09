@@ -138,7 +138,10 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
         val toEmitNow = emitterLatter.filter { it.timer < 0 }
 
         emitterLatterMirror.addAll(toEmitNow)
+        emitterLatterMirror.sortBy { it.event }
+
         emitterMirror.addAll(emitter)
+        emitterMirror.sortBy { it.first }
 
         debug { emitterMirror.joinToString("\n") { "emit ${eventMapper[it.first] ?: "??"} (id : ${it.first})" } }
 
