@@ -19,4 +19,4 @@ data class TextureComponent(var texture: TextureRegion) : Component
 data class Position(val value: Vector2 = Vector2()) : Component
 data class Size(val value: Vector2 = Vector2()) : Component
 data class Direction(val value: Vector2 = Vector2()) : Component
-data class Rotation(var degree: Float, val origin: Vector2 = Vector2()) : Component
+data class Rotation(var degree: Float = 0f, val origin: Vector2 = Vector2()) : Component
