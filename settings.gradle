@@ -5,3 +5,6 @@ include 'aseprite-plugin'
 include 'aseprite-addons'
 include 'libgdx-test'
 
+include 'admob-addons:admob-core'
+include 'admob-addons:admob-desktop'
+
