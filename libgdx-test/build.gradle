@@ -14,6 +14,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
+apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.6
 
@@ -42,4 +43,12 @@ compileTestKotlin {
 test {
     // exclude tests for CI as there is no screen attached
     exclude 'com/github/dwursteisen/libgdx/test/**'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
 }
