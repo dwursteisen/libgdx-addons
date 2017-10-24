@@ -1,5 +1,16 @@
 package com.github.dwursteisen.libgdx
 
+import kotlin.reflect.KProperty
+
+
+inline fun <reified T> locate() : Locator<T> = Locator(T::class.java)
+
+class Locator<T>(private val clazz: Class<T>) {
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+        return ServiceLocator.get(clazz)
+    }
+}
+
 object ServiceLocator {
 
     private var cache: Map<Class<out Any>, Any> = emptyMap()
