@@ -73,6 +73,15 @@ class Aseprite(val texture: Texture, val json: AsepriteJson) {
             it.name to animation
         }.toMap()
     }
+
+    fun frame(i: Int): TextureRegion {
+        val frameData = json.asFrameIndexedMap()
+        val size = frameData.entries.map { it.value.sourceSize }
+                .first()
+
+        val splitted = TextureRegion.split(texture, size.w, size.h)
+        return splitted[i][0]
+    }
 }
 
 
