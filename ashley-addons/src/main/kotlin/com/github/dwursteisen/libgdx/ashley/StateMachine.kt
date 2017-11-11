@@ -146,10 +146,7 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
     }
 
     fun emit(event: Event, eventData: EventData) {
-        for (index in 0..entities.size() - 1) {
-            val it = entities[index]
-            perform(event, it, eventData)
-        }
+        entities?.forEach { it -> perform(event, it, eventData) }
     }
 
     private fun perform(event: Event, entity: Entity, eventData: EventData) {
@@ -163,7 +160,7 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
     }
 
     override fun onEvent(event: Event, eventData: EventData) {
-        if(!checkProcessing()) {
+        if (!checkProcessing()) {
             return
         }
         val target = eventData.target
