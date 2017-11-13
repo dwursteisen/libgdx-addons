@@ -60,6 +60,11 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
             return super.touchDown(screenX, screenY, pointer, button)
         }
 
+        override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
+            touchDown.set(screenX.toFloat(), screenY.toFloat())
+            return super.touchDragged(screenX, screenY, pointer)
+        }
+
         override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
             val screenTouchData = bus.createEventData()
             touchUp.set(screenX.toFloat(), screenY.toFloat())
