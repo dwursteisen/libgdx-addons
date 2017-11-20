@@ -81,7 +81,7 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
 
     private var currentProcessor: InputProcessor? = null
 
-    fun resetInputProcessor() {
+    private fun resetInputProcessor() {
         currentProcessor = Gdx.input.inputProcessor
         val processor = EventInputProcessor(this)
         if (currentProcessor == null) {
