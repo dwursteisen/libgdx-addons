@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import ktx.log.debug
+import com.badlogic.gdx.utils.Array as GdxArray
 
 
 typealias Transition = (entity: Entity, event: EventData) -> Unit
@@ -44,6 +45,8 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
     private var defaultTransition = emptyMap<EntityState, Transition>()
 
     private val state: ComponentMapper<StateComponent> = get()
+
+    private val tmpEntities = GdxArray<Entity>()
 
     private val events: Set<Event>
         get() {
@@ -146,7 +149,11 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
     }
 
     fun emit(event: Event, eventData: EventData) {
-        entities?.forEach { it -> perform(event, it, eventData) }
+        tmpEntities.clear()
+        entities?.let {
+            entities.forEach { tmpEntities.add(it) }
+        }
+        tmpEntities.forEach { it -> perform(event, it, eventData) }
     }
 
     private fun perform(event: Event, entity: Entity, eventData: EventData) {

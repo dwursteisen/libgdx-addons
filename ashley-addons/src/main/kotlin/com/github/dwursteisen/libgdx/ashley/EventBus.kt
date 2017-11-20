@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
 import ktx.log.debug
@@ -75,13 +76,23 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
     }
 
     init {
-        val currentProcessor = Gdx.input.inputProcessor
+        resetInputProcessor()
+    }
+
+    private var currentProcessor: InputProcessor? = null
+
+    fun resetInputProcessor() {
+        currentProcessor = Gdx.input.inputProcessor
         val processor = EventInputProcessor(this)
         if (currentProcessor == null) {
             Gdx.input.inputProcessor = processor
         } else {
             Gdx.input.inputProcessor = InputMultiplexer(processor, currentProcessor)
         }
+    }
+
+    fun clearInputProcessor() {
+        Gdx.input.inputProcessor = null
     }
 
     private var listeners: MutableMap<Event, List<EventListener>> = mutableMapOf()
