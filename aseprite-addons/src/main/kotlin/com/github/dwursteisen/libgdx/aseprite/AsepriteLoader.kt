@@ -25,6 +25,10 @@ class Aseprite(val texture: Texture, val json: AsepriteJson) {
     )
 
 
+    fun slices(name: String) = json.meta.slices.firstOrNull { it.name == name } ?: invalidSlice(name)
+
+    private fun invalidSlice(name: String): Nothing = TODO("Invalid slice name $name. Other candidates : ${json.meta.slices.map { it.name }}")
+
     private fun toAnimation(): Map<String, Animation<TextureRegion>> {
 
         val spriteDef: AsepriteJson = json

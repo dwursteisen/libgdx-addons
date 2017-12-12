@@ -35,7 +35,11 @@ open class AsepriteJson(val frames: HashMap<String, AsepriteFrame> = HashMap(), 
 
     private fun invalidSlice(name: String): Nothing = TODO("Invalid slice name $name. Other candidates : ${meta.slices.map { it.name }}")
     fun asFrameIndexedMap() = this.frames.entries.map({
-        val id = it.key.substringAfterLast(" ").replace(".ase", "").toInt()
-        id to it.value
+        if (it.key.contains(" ")) {
+            val id = it.key.substringAfterLast(" ").replace(".ase", "").toInt()
+            id to it.value
+        } else {
+            0 to it.value
+        }
     }).toMap()
 }
