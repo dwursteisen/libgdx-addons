@@ -34,12 +34,12 @@ open class AsepriteJson(val frames: HashMap<String, AsepriteFrame> = HashMap(), 
     fun slices(name: String) = meta.slices.filter { it.name == name }.firstOrNull() ?: invalidSlice(name)
 
     private fun invalidSlice(name: String): Nothing = TODO("Invalid slice name $name. Other candidates : ${meta.slices.map { it.name }}")
-    fun asFrameIndexedMap() = this.frames.entries.map({
+    fun asFrameIndexedMap() = this.frames.entries.map {
         if (it.key.contains(" ")) {
-            val id = it.key.substringAfterLast(" ").replace(".ase", "").toInt()
+            val id = it.key.substringAfterLast(" ").replace("\\.ase.*".toRegex(), "").toInt()
             id to it.value
         } else {
             0 to it.value
         }
-    }).toMap()
+    }.toMap()
 }
