@@ -1,5 +1,5 @@
 version '1.0.0-SNAPSHOT'
-group = 'com.github.dwursteisen.libgdx'
+group = 'com.github.dwursteisen.libgdx-addons'
 
 apply plugin: 'maven-publish'
 

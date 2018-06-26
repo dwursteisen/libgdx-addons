@@ -1,5 +1,5 @@
 
-group = 'com.github.dwursteisen.libgdx'
+group = 'com.github.dwursteisen.libgdx-addons'
 
 buildscript {
     ext {

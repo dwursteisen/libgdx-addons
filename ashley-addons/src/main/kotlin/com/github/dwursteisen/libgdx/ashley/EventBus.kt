@@ -52,6 +52,13 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
             return super.keyDown(keycode)
         }
 
+        override fun keyUp(keycode: Int): Boolean {
+            val keyEventData = bus.createEventData()
+            keyEventData.body = keycode
+            bus.emit(StateMachineSystem.EVENT_KEY_UP, keyEventData)
+            return super.keyDown(keycode)
+        }
+
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
 
             val screenTouchData = bus.createEventData()

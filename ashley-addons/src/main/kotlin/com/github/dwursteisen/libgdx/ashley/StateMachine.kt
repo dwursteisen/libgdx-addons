@@ -62,6 +62,7 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
         val EVENT_TOUCHED = -2
         val EVENT_SLIDE = -3
         val EVENT_KEY = -4
+        val EVENT_KEY_UP = -5
     }
 
 
