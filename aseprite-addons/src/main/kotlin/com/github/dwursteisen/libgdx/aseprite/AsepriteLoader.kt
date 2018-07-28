@@ -84,7 +84,7 @@ class Aseprite(val texture: Texture, val json: AsepriteJson) {
                 .first()
 
         val splitted = TextureRegion.split(texture, size.w, size.h)
-        return splitted[i][0]
+        return splitted[0][i]
     }
 }
 
