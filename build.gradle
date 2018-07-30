@@ -3,7 +3,7 @@ group = 'com.github.dwursteisen.libgdx-addons'
 
 buildscript {
     ext {
-        kotlinVersion = '1.1.4-2'
+        kotlinVersion = '1.2.51'
     }
     repositories {
         mavenCentral()
