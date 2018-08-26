@@ -58,8 +58,9 @@ class Aseprite(val texture: Texture, val json: AsepriteJson) {
             val tmp = com.badlogic.gdx.utils.Array<TextureRegion>(allDurations.sum() / denominateur)
             for (index in it.from..it.to) {
                 val duration = frameData[index]?.duration ?: 0
+                val (x, y) = splitedIndex(index, splitted)
                 for (nbCopie in 1..duration / denominateur) {
-                    tmp.add(splitted[0][index])
+                    tmp.add(splitted[x][y])
                 }
             }
             val direction = when (it.direction) {
@@ -78,13 +79,20 @@ class Aseprite(val texture: Texture, val json: AsepriteJson) {
         }.toMap()
     }
 
+    fun splitedIndex(index: Int, splitted: kotlin.Array<kotlin.Array<TextureRegion>>): Pair<Int, Int> {
+        val x = ((index - index % splitted[0].size) / splitted[0].size)
+        val y = index % splitted[0].size
+        return Pair(x, y)
+    }
+
     fun frame(i: Int): TextureRegion {
         val frameData = json.asFrameIndexedMap()
         val size = frameData.entries.map { it.value.sourceSize }
                 .first()
 
         val splitted = TextureRegion.split(texture, size.w, size.h)
-        return splitted[0][i]
+        val (x, y) = splitedIndex(i, splitted)
+        return splitted[x][y]
     }
 }
 

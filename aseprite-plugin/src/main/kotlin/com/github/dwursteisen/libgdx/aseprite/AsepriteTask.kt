@@ -60,6 +60,8 @@ open class AsepriteTask : DefaultTask() {
 
     var verbose: Boolean = false
 
+    var sheet_pack: Boolean = true
+
     var sheet_height: Int? = null
     var sheet_width: Int? = null
 
@@ -136,6 +138,10 @@ MacOS specific : point to aseprite located into <aseprite directory>/Aseprite.ap
             args += "--sheet-height"
             args += "$sheet_height"
 
+        }
+
+        if(sheet_pack) {
+            args += "--sheet-pack"
         }
 
         args += "--sheet"
