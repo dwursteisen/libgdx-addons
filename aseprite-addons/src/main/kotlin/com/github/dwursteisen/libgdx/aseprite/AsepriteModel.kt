@@ -16,14 +16,17 @@ fun Int.gcd(other: Int): Int {
     return gcd.toInt()
 }
 
+
 open class AsepriteBound(val x: Int = 0, val y: Int = 0, val w: Int = 0, val h: Int = 0)
 open class AsepriteSliceData(val frame: Int = 0, val bounds: AsepriteBound = AsepriteBound())
 open class AsepriteFrameTag(val name: String = "", val from: Int = 0, val to: Int = 0, val direction: String = "")
-open class AsepriteSlices(val name: String = "", val keys: Array<AsepriteSliceData> = emptyArray<AsepriteSliceData>()) {
+open class AsepriteSlices(val name: String = "", val data: String = "", val color: String = "", val keys: Array<AsepriteSliceData> = emptyArray<AsepriteSliceData>()) {
     fun textureRegion(texture: Texture, offset: Pair<Int, Int> = Pair(0, 0)): TextureRegion {
         val bounds = keys.first().bounds
         return TextureRegion(texture, offset.first + bounds.x, offset.second + bounds.y, bounds.w, bounds.h)
     }
+
+    fun toAnimationSlices(parent: Aseprite) = AnimationSlices(parent, this)
 }
 
 open class AsepriteMetaData(val frameTags: List<AsepriteFrameTag> = emptyList(), val slices: List<AsepriteSlices> = emptyList())
