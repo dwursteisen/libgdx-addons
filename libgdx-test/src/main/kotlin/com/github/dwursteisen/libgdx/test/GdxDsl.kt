@@ -72,12 +72,7 @@ class GdxDsl(private val rule: LibGdxRule) {
         rule.add(InputAction.Touch(x, y))
         return this;
     }
-
-    fun release(x: Int, y: Int): GdxDsl {
-        notYetImplemented()
-        return this;
-    }
-
+    
     fun startRecord(): GdxDsl {
         rule.add(InputAction.StartRecord())
         return this;

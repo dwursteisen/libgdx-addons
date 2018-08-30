@@ -6,7 +6,6 @@ import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFiles
 import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import org.gradle.process.internal.ExecActionFactory
 import java.io.File
 import javax.inject.Inject
@@ -66,19 +65,18 @@ open class AsepriteTask : DefaultTask() {
     var sheet_width: Int? = null
 
     @TaskAction
-    fun export(input: IncrementalTaskInputs) {
+    fun export() {
         val exec = getExecActionFactory().newExecAction()
 
         val exts = project.extensions.getByType(AsepritePluginExtentions::class.java)
         val aseprite = exts.exec ?: invalideAsepritePath()
 
-        inputFiles?.files?.forEach({ file ->
+        inputFiles?.files?.forEach { file ->
             logger.info("Will run Aseprite to process $file")
             exec.commandLine = args(aseprite, file)
             val result = exec.execute()
             result.assertNormalExitValue()
-        })
-
+        }
     }
 
     private fun invalideAsepritePath(): Nothing {

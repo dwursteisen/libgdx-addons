@@ -50,7 +50,6 @@ internal class DelegateGame(var d: ApplicationListener, var beforeLatch: CountDo
                         val red = (currentPixel shr 24 and 0xff)
                         val green = (currentPixel shr 16 and 0xff)
                         val blue = (currentPixel shr 8 and 0xff)
-                        val alpha = (currentPixel and 0xff)
 
                         // don't understand why shl 8 with red...
                         val rgb = red shl 8 or green shl 8 or blue
@@ -74,7 +73,7 @@ internal class DelegateGame(var d: ApplicationListener, var beforeLatch: CountDo
         if (recording) {
             val pixels = ScreenUtils.getFrameBufferPixels(0, 0, Gdx.graphics.backBufferWidth, Gdx.graphics.backBufferHeight, true)
             val pixmap = Pixmap(Gdx.graphics.backBufferWidth, Gdx.graphics.backBufferHeight, Pixmap.Format.RGBA8888)
-            BufferUtils.copy(pixels, 0, pixmap.getPixels(), pixels.size)
+            BufferUtils.copy(pixels, 0, pixmap.pixels, pixels.size)
             screenshots += pixmap
 
             timestamps += System.currentTimeMillis()

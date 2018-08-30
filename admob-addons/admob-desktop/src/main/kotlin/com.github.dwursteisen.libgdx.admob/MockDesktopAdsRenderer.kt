@@ -9,9 +9,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport
 /**
  * Created by david on 16/10/2017.
  */
-
-
-
 internal class MockDesktopAdsRenderer(val delegate: ApplicationListener) : ApplicationListener {
 
     private lateinit var batch: ShapeRenderer
