@@ -128,7 +128,7 @@ class AnimationSlices(parent: Aseprite, val slice: AsepriteSlices) {
 
 }
 
-class Aseprite(val texture: Texture, val json: AsepriteJson) {
+class Aseprite(private val texture: Texture, val json: AsepriteJson) {
 
     private val animationCache: Map<String, Animation<TextureRegion>>
     private val slicesCache: Map<String, AnimationSlices>

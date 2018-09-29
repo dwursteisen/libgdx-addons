@@ -12,6 +12,8 @@ buildscript {
 
 plugins {
     base
+    maven
+    `maven-publish`
     kotlin("jvm") version "1.2.61" apply false
 }
 
