@@ -9,21 +9,25 @@ import ktx.log.debug
 import com.badlogic.gdx.utils.Array as GdxArray
 
 
-typealias Transition = (entity: Entity, event: EventData) -> Unit
+typealias Transition = StateMachine.(entity: Entity, event: EventData) -> Unit
+
 typealias Event = Int
 
 abstract class EntityState {
-    open fun enter(entity: Entity, machine: StateMachineSystem, eventData: EventData) {
+    /**
+     * Called when an entity is going into this state.
+     */
+    open fun enter(entity: Entity, machine: StateMachineSystem, eventData: EventData) = Unit
 
-    }
+    /**
+     * Called by the main loop when in this state.
+     */
+    open fun update(entity: Entity, machine: StateMachineSystem, delta: Float) = Unit
 
-    open fun update(entity: Entity, machine: StateMachineSystem, delta: Float) {
-
-    }
-
-    open fun exit(entity: Entity, machine: StateMachineSystem, eventData: EventData) {
-
-    }
+    /**
+     * Called when an entity is going into another state.
+     */
+    open fun exit(entity: Entity, machine: StateMachineSystem, eventData: EventData) = Unit
 
     companion object {
         val STATE_NOP = object : EntityState() {
@@ -34,12 +38,17 @@ abstract class EntityState {
     }
 }
 
+interface StateMachine {
+    fun go(newState: EntityState, entity: Entity)
+    fun go(newState: EntityState, entity: Entity, event: EventData)
+    fun emit(event: Event, eventData: EventData)
+    fun emit(event: Event)
+}
 
-
-typealias EventFactory = () -> Event
-
-
-abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : IteratingSystem(family), EventListener {
+abstract class StateMachineSystem(
+        val eventBus: EventBus,
+        family: Family
+) : IteratingSystem(family), EventListener, StateMachine {
 
     private var transitions = emptyMap<EntityState, Map<Event, Transition>>()
     private var defaultTransition = emptyMap<EntityState, Transition>()
@@ -58,13 +67,12 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
         }
 
     companion object {
-        val EVENT_NOP = -1
-        val EVENT_TOUCHED = -2
-        val EVENT_SLIDE = -3
-        val EVENT_KEY = -4
-        val EVENT_KEY_UP = -5
+        const val EVENT_NOP = -1
+        const val EVENT_TOUCHED = -2
+        const val EVENT_SLIDE = -3
+        const val EVENT_KEY = -4
+        const val EVENT_KEY_UP = -5
     }
-
 
     abstract fun describeMachine()
 
@@ -74,13 +82,14 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
         eventBus.register(this, *events.toIntArray())
     }
 
-
     private inline fun usingState(entity: Entity, block: (state: StateComponent) -> Unit) {
         val state = entity.getNullable(state)
         if (state == null) {
             ktx.log.error {
-                "Your entity SHOULD have the StateComponent component, as the entity is managed by a State Machine System." +
-                        "As the current entity doesn't have a state, it will be silently ignored. But you may wants to fix this issue as it is not expected."
+                "Your entity SHOULD have the StateComponent component, " +
+                        "as the entity is managed by a State Machine System. " +
+                        "As the current entity doesn't have a state, it will be silently ignored. " +
+                        "But you may wants to fix this issue as it is not expected."
             }
         } else {
             block.invoke(state)
@@ -93,9 +102,10 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
         }
     }
 
-
-    class OnState(val state: EntityState, val parent: StateMachineSystem) {
-
+    class OnState(
+            private val state: EntityState,
+            private val parent: StateMachineSystem
+    ) {
         fun on(vararg events: Int, block: Transition): OnState {
             events.forEach { on(it, block) }
             return this
@@ -107,54 +117,47 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
         }
 
         fun on(event: Int, block: Transition): OnState {
-
             var currentTransitions = parent.transitions[state] ?: emptyMap()
-            currentTransitions += event to block
+            currentTransitions = currentTransitions + (event to block)
 
             parent.transitions += state to currentTransitions
             return this
         }
 
-        fun default(block: Transition): Unit {
+        fun default(block: Transition) {
             parent.defaultTransition += state to block
         }
     }
 
-    fun onState(state: EntityState): OnState {
-        return OnState(state, this)
-    }
+    fun onState(state: EntityState): OnState = OnState(state, this)
 
-    fun startWith(state: EntityState) {
-        startWith({ entity, data -> go(state, entity, data) })
-    }
+    fun startWith(state: EntityState) = startWith { entity, data -> go(state, entity, data) }
 
     fun startWith(transition: Transition) {
         onState(EntityState.STATE_NOP).default(transition)
     }
 
+    override fun go(newState: EntityState, entity: Entity) = go(newState, entity, eventBus.createEventData())
 
-    fun go(newState: EntityState, entity: Entity, event: EventData = eventBus.createEventData()) {
+    override fun go(newState: EntityState, entity: Entity, event: EventData) {
         val entityState = entity[state]
 
-        debug("STATE_MACHINE", { -> "Exit ${entityState.status::class.java.simpleName} on event ${event.event}" })
+        debug("STATE_MACHINE") { "Exit ${entityState.status::class.java.simpleName} on event ${event.event}" }
         entityState.status.exit(entity, this, event)
 
         entityState.status = newState
-        debug("STATE_MACHINE", { -> "Enter ${entityState.status::class.java.simpleName} on event ${event.event}" })
+        debug("STATE_MACHINE") { "Enter ${entityState.status::class.java.simpleName} on event ${event.event}" }
         entityState.status.enter(entity, this, event)
     }
 
+    override fun emit(event: Event) = emit(event, eventBus.createEventData())
 
-    fun emit(event: Event) {
-        emit(event, eventBus.createEventData())
-    }
-
-    fun emit(event: Event, eventData: EventData) {
+    override fun emit(event: Event, eventData: EventData) {
         tmpEntities.clear()
         entities?.let {
             entities.forEach { tmpEntities.add(it) }
         }
-        tmpEntities.forEach { it -> perform(event, it, eventData) }
+        tmpEntities.forEach { perform(event, it, eventData) }
     }
 
     private fun perform(event: Event, entity: Entity, eventData: EventData) {
@@ -162,7 +165,7 @@ abstract class StateMachineSystem(val eventBus: EventBus, family: Family) : Iter
         usingState(entity) { state ->
             val entityState = state.status
             val transition: Transition? = transitions[entityState]?.get(event) ?: defaultTransition[entityState]
-            transition?.invoke(entity, eventData)
+            transition?.invoke(this, entity, eventData)
         }
 
     }
