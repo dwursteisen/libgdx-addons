@@ -56,7 +56,7 @@ open class PackrTask : DefaultTask() {
         }
         config.verbose = this.verbose
 
-        val outputDirPath = this.outputDir ?: "packr-out"
+        val outputDirPath = this.outputDir ?: "build/packr-out"
 
         config.outDir = project.file(outputDirPath)
 
