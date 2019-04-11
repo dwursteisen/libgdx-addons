@@ -14,6 +14,7 @@ class ConfigurationPlugin : Plugin<Project> {
 
         project.plugins.apply("org.jetbrains.kotlin.jvm")
         project.plugins.apply("org.gradle.java-library")
+        project.plugins.apply("com.ofg.uptodate")
 
         project.tasks.withType<KotlinCompile>().forEach {
             it.kotlinOptions {

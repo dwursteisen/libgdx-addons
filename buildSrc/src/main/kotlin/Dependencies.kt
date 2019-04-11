@@ -2,10 +2,10 @@ object Version {
     val ashley = "1.7.3"
     val assertJ = "3.8.0"
     val mockito = "2.8.47"
-    val ktx = "1.9.8-b3"
+    val ktx = "1.9.9-b1"
     val gdx = "1.9.9"
     val junit = "4.12"
-    val gif = "1.0"
+    val gif = "1.4"
 }
 
 object Dependencies {
