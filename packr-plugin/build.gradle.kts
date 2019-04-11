@@ -1,12 +1,12 @@
-plugins {
-    kotlin("jvm")
-    `maven-publish`
-
+repositories {
+    maven {
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+    }
 }
 
 dependencies {
-    compile(kotlin("stdlib"))
-    compile(gradleApi())
-    compile("com.github.libgdx:packr:ef4035e392")
-    testCompile("junit:junit:4.12")
+    implementation(kotlin("stdlib"))
+    implementation(gradleApi())
+    implementation("com.badlogicgames.packr:packr:2.1-SNAPSHOT")
+    testImplementation(TestDependencies.junit)
 }

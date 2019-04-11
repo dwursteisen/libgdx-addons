@@ -1,13 +1,6 @@
-plugins {
-    kotlin("jvm")
-    `maven-publish`
-
-}
-
 dependencies {
-    val gdxVersion: String by project.extra
+    implementation(kotlin("stdlib"))
+    api(Dependencies.gdx)
 
-    compile(kotlin("stdlib"))
-    compile("com.badlogicgames.gdx:gdx:$gdxVersion")
-    testCompile("junit:junit:4.12")
+    testImplementation(TestDependencies.junit)
 }

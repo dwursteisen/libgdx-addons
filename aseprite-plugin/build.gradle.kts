@@ -1,11 +1,5 @@
-plugins {
-    kotlin("jvm")
-    `maven-publish`
-
-}
-
 dependencies {
-    compile(kotlin("stdlib"))
-    compile(gradleApi())
-    testCompile("junit:junit:4.12")
+    implementation(kotlin("stdlib"))
+    implementation(gradleApi())
+    testImplementation(TestDependencies.junit)
 }
