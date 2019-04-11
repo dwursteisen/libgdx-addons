@@ -2,7 +2,7 @@ package com.github.dwursteisen.libgdx.admob
 
 import com.badlogic.gdx.math.Vector2
 
-class AdsSize private constructor(val size: Vector2){
+class AdsSize private constructor(val size: Vector2) {
 
     companion object {
         val BANNER = AdsSize(Vector2(320f, 50f))

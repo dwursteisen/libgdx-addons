@@ -20,15 +20,15 @@ internal class MockDesktopAdsRenderer(val delegate: ApplicationListener) : Appli
         delegate.render()
         query?.let {
 
-            val xx = if(it.flags and CENTER == CENTER) {
+            val xx = if (it.flags and CENTER == CENTER) {
                 (viewport.screenWidth - it.format.size.x) * 0.5f
-            } else if(it.flags and RIGHT == RIGHT) {
+            } else if (it.flags and RIGHT == RIGHT) {
                 viewport.screenWidth - it.format.size.x
             } else {
                 0f
             }
 
-            val yy = if(it.flags and UP == UP) {
+            val yy = if (it.flags and UP == UP) {
                 viewport.screenHeight - it.format.size.y
             } else {
                 0f

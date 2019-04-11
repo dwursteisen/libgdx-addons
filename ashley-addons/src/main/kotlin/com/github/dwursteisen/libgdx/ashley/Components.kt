@@ -14,6 +14,7 @@ data class StateComponent(var state: Int = 0,
         state = s
     }
 }
+
 data class TextureComponent(var texture: TextureRegion) : Component
 
 data class Position(val value: Vector2 = Vector2()) : Component

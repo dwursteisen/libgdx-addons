@@ -4,7 +4,7 @@ import com.badlogic.gdx.ApplicationListener
 
 
 class AdsQuery(private val manager: GdxAdsManager, var key: String, var format: AdsSize = AdsSize.BANNER, var flags: AdsPosition = 0, var callback: () -> Unit = {}) {
-    fun close() : Unit {
+    fun close(): Unit {
         manager.close(this)
     }
 }

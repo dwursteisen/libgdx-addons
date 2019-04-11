@@ -5,7 +5,6 @@ import com.badlogicgames.packr.PackrConfig
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import java.io.File
@@ -20,14 +19,14 @@ open class PackrTask : DefaultTask() {
     var platform: PackrConfig.Platform? = null
     var jdk: String? = null
     var executable: String? = null
-    
+
     var mainClass: String? = null
     var vmArgs: Array<String>? = null
     var minimizeJre: String? = null
 
     @InputFile
     var classpath: File? = null
-    
+
     @OutputDirectory
     var outputDir: File? = null
 
@@ -37,7 +36,7 @@ open class PackrTask : DefaultTask() {
 
     @TaskAction
     fun packageIt(inputs: IncrementalTaskInputs) {
-        
+
         val config = PackrConfig()
         config.platform = this.platform ?: findCurrentSystem()
         config.jdk = this.jdk ?: currentJavaHome()
@@ -50,7 +49,7 @@ open class PackrTask : DefaultTask() {
 
         config.minimizeJre = this.minimizeJre
 
-        config.bundleIdentifier = if(config.platform == PackrConfig.Platform.MacOS) {
+        config.bundleIdentifier = if (config.platform == PackrConfig.Platform.MacOS) {
             this.bundleIdentifier ?: invalidBundle()
         } else {
             this.bundleIdentifier

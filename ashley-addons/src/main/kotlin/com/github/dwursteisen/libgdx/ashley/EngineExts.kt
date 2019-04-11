@@ -1,10 +1,6 @@
 package com.github.dwursteisen.libgdx.ashley
 
-import com.badlogic.ashley.core.Component
-import com.badlogic.ashley.core.Engine
-import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
-import com.badlogic.ashley.core.PooledEngine
+import com.badlogic.ashley.core.*
 
 inline fun <reified T : Component> PooledEngine.createComponent(): T = this.createComponent(T::class.java)
 

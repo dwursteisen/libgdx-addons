@@ -138,7 +138,7 @@ MacOS specific : point to aseprite located into <aseprite directory>/Aseprite.ap
 
         }
 
-        if(sheet_pack) {
+        if (sheet_pack) {
             args += "--sheet-pack"
         }
 
