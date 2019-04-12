@@ -1,11 +1,14 @@
 enableFeaturePreview("GRADLE_METADATA")
 
-include("ashley-addons")
 include("core-addons")
-include("packr-plugin")
-include("aseprite-plugin")
+include("ashley-addons")
 include("aseprite-addons")
+
 include("libgdx-test")
+
 include("admob-addons:admob-core")
 include("admob-addons:admob-desktop")
+
+include("packr-gradle-plugin")
+include("aseprite-gradle-plugin")
 
