@@ -23,6 +23,8 @@ class LibGDXPlugin : Plugin<Project> {
                 else -> NopPlugin()
             }.apply(it)
         }
+
+        RootProjectPlugin().apply(project)
     }
 
 }

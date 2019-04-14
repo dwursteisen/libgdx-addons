@@ -19,47 +19,52 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
         // Add Java plugin to access sourceSets extensions
         project.apply { it.plugin("org.gradle.java") }
         project.apply { it.plugin("org.jetbrains.kotlin.jvm") }
-        //   project.apply { it.plugin("org.jetbrains.gradle.plugin.idea-ext") }
+        project.apply { it.plugin("org.jetbrains.gradle.plugin.idea-ext") }
 
         logger.info("Detecting Desktop module. Will add custom tasks: dist and run.")
         exts.mainClass = exts.mainClass ?: tryFindMainClass(project)
         exts.assetsDirectory = exts.assetsDirectory ?: project.tryFindAssetsDirectory()
 
-        with(project) {
-            val sourceSets = extensions.getByName("sourceSets") as SourceSetContainer
+        val sourceSets = project.extensions.getByName("sourceSets") as SourceSetContainer
 
-            val dist = tasks.create("dist", Jar::class.java) { jar ->
-                jar.group = "libgdx"
+        addDistTask(project, sourceSets)
+        addRunTask(project, sourceSets)
+    }
 
-                jar.doFirst {
-                    jar.from(files(sourceSets.getByName("main").output.classesDirs))
-                    jar.from(files(sourceSets.getByName("main").output.resourcesDir))
-
-                    val files = files(sourceSets.getByName("main").runtimeClasspath)
-                    jar.from(files)
-
-                    jar.from(files(exts.assetsDirectory))
-                    jar.manifest { m ->
-                        m.attributes(kotlin.collections.mapOf(
-                                "Main-Class" to exts.mainClass,
-                                "Class-path" to files.joinToString(" ") { f -> f.name }
-                        ))
-                    }
-                }
+    private fun addRunTask(project: Project, sourceSets: SourceSetContainer): JavaExec? {
+        return project.tasks.create("run", JavaExec::class.java) { exec ->
+            exec.group = "libgdx"
+            exec.doFirst {
+                it as JavaExec
+                it.main = exts.mainClass!!
+                it.classpath = sourceSets.getByName("main").runtimeClasspath
+                it.standardInput = System.`in`
+                it.workingDir = exts.assetsDirectory!!
             }
-            dist.dependsOn(project.tasks.getByName("classes"))
-            tasks.create("run", org.gradle.api.tasks.JavaExec::class.java) { exec ->
-                exec.group = "libgdx"
-                exec.doFirst {
-                    it as JavaExec
-                    it.main = exts.mainClass!!
-                    it.classpath = sourceSets.getByName("main").runtimeClasspath
-                    it.standardInput = java.lang.System.`in`
-                    it.workingDir = exts.assetsDirectory!!
-                }
-            }
-
         }
+    }
+
+    private fun addDistTask(project: Project, sourceSets: SourceSetContainer) {
+        val dist = project.tasks.create("dist", Jar::class.java) { jar ->
+            jar.group = "libgdx"
+
+            jar.doFirst {
+                jar.from(project.files(sourceSets.getByName("main").output.classesDirs))
+                jar.from(project.files(sourceSets.getByName("main").output.resourcesDir))
+
+                val files = project.files(sourceSets.getByName("main").runtimeClasspath)
+                jar.from(files)
+
+                jar.from(project.files(exts.assetsDirectory))
+                jar.manifest { m ->
+                    m.attributes(mapOf(
+                            "Main-Class" to exts.mainClass,
+                            "Class-path" to files.joinToString(" ") { f -> f.name }
+                    ))
+                }
+            }
+        }
+        dist.dependsOn(project.tasks.getByName("classes"))
     }
 
     private fun tryFindMainClass(project: Project): String? {
@@ -76,11 +81,10 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
     inner class MainClassVisitor(var main: String? = null) : FileVisitor {
         override fun visitFile(fileDetails: FileVisitDetails) {
             logger.info(fileDetails.name)
-            // TODO: check if it's main class
             val use = fileDetails.open().use {
                 it.bufferedReader()
                         .lineSequence()
-                        .filter { it -> it.contains("fun main(") || it.contains("import com.badlogic.gdx.backends.lwjgl.LwjglApplication") }
+                        .filter { line -> line.contains("fun main(") || line.contains("import com.badlogic.gdx.backends.lwjgl.LwjglApplication") }
                         .count() >= 2
 
             }

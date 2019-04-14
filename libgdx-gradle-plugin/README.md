@@ -11,7 +11,7 @@
 - [x] Add `run` task on desktop module to run the jar;
 - [ ] Add task `packr` on desktop to build the executable version;
 - [x] Detect main class;
-- [ ] Add IntelliJ run configuration.
+- [x] Add IntelliJ run configuration.
 
 ## Android
 - [ ] Copy native libs on Android;

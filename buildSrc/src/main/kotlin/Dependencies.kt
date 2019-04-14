@@ -6,6 +6,7 @@ object Version {
     val gdx = "1.9.9"
     val junit = "4.12"
     val gif = "1.4"
+    val intellij = "0.5"
 }
 
 object Dependencies {
@@ -22,4 +23,8 @@ object TestDependencies {
     val assertJ = "org.assertj:assertj-core:${Version.assertJ}"
     val mockito = "org.mockito:mockito-core:${Version.mockito}"
     val junit = "junit:junit:${Version.junit}"
+}
+
+object Plugins {
+    val intellij = "org.jetbrains.gradle.plugin.idea-ext:org.jetbrains.gradle.plugin.idea-ext.gradle.plugin:${Version.intellij}"
 }
