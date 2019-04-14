@@ -9,7 +9,9 @@
 ## Desktop
 - [x] Add `dist` task on desktop module to build the jar game;
 - [x] Add `run` task on desktop module to run the jar;
-- [ ] Add task `packr` on desktop to build the executable version.
+- [ ] Add task `packr` on desktop to build the executable version;
+- [x] Detect main class;
+- [ ] Add IntelliJ run configuration.
 
 ## Android
 - [ ] Copy native libs on Android;
