@@ -7,6 +7,7 @@ object Version {
     val junit = "4.12"
     val gif = "1.4"
     val intellij = "0.5"
+    val download = "3.4.3"
 }
 
 object Dependencies {
@@ -27,4 +28,5 @@ object TestDependencies {
 
 object Plugins {
     val intellij = "org.jetbrains.gradle.plugin.idea-ext:org.jetbrains.gradle.plugin.idea-ext.gradle.plugin:${Version.intellij}"
+    val download = "de.undercouch:gradle-download-task:${Version.download}"
 }
