@@ -1,6 +1,8 @@
 package com.github.dwursteisen.libgdx.gradle.internal
 
 import com.github.dwursteisen.libgdx.gradle.LibGDXExtensions
+import com.github.dwursteisen.libgdx.packr.PackrTask
+import de.undercouch.gradle.tasks.download.Download
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.FileVisitDetails
@@ -29,10 +31,41 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
 
         addDistTask(project, sourceSets)
         addRunTask(project, sourceSets)
+        addOpenJdkDownloadTask(project)
+        addPackr(project)
     }
 
-    private fun addRunTask(project: Project, sourceSets: SourceSetContainer): JavaExec? {
-        return project.tasks.create("run", JavaExec::class.java) { exec ->
+    private fun addOpenJdkDownloadTask(project: Project) {
+        project.apply { it.plugin("de.undercouch.download") }
+        project.tasks.create("open-jdk-mac", Download::class.java) { dl ->
+            dl.group = "packr"
+            dl.dest(project.file("build/open-jdk/open-jdk-mac.zip"))
+            dl.overwrite(false)
+            dl.doFirst {
+                dl.src(exts.openJdk.macOSX)
+            }
+        }
+    }
+
+    private fun addPackr(project: Project) {
+        val task = project.tasks.create("packr-macosx", PackrTask::class.java) {
+            it.group = "packr"
+            it.classpath = project.tasks.getByPath("dist").outputs.files.singleFile
+            it.outputDir = project.file("build/parkr/${project.rootProject.name}.app")
+
+            it.doFirst {
+                it as PackrTask
+                it.jdk = project.file("build/open-jdk/open-jdk-mac.zip").absolutePath
+                it.bundleIdentifier = project.rootProject.name
+                it.mainClass = exts.mainClass
+            }
+        }
+
+        task.dependsOn("dist", "open-jdk-mac")
+    }
+
+    private fun addRunTask(project: Project, sourceSets: SourceSetContainer) {
+        project.tasks.create("run", JavaExec::class.java) { exec ->
             exec.group = "libgdx"
             exec.doFirst {
                 it as JavaExec
@@ -48,19 +81,18 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
         val dist = project.tasks.create("dist", Jar::class.java) { jar ->
             jar.group = "libgdx"
 
+            jar.archiveFileName.set("${project.rootProject.name}-desktop.jar")
+
             jar.doFirst {
                 jar.from(project.files(sourceSets.getByName("main").output.classesDirs))
                 jar.from(project.files(sourceSets.getByName("main").output.resourcesDir))
 
                 val files = project.files(sourceSets.getByName("main").runtimeClasspath)
-                jar.from(files)
+                jar.from(files.filter { f -> f.exists() }.map { f -> if (f.isDirectory) f else project.zipTree(f) })
 
                 jar.from(project.files(exts.assetsDirectory))
                 jar.manifest { m ->
-                    m.attributes(mapOf(
-                            "Main-Class" to exts.mainClass,
-                            "Class-path" to files.joinToString(" ") { f -> f.name }
-                    ))
+                    m.attributes(mapOf("Main-Class" to exts.mainClass))
                 }
             }
         }
