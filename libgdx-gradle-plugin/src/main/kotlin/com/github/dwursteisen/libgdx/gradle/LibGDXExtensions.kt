@@ -11,6 +11,6 @@ open class OpenJdk {
 open class LibGDXExtensions {
     var mainClass: String? = null
     var assetsDirectory: File? = null
-
+    var version = "1.9.9"
     var openJdk = OpenJdk()
 }

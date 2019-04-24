@@ -12,7 +12,6 @@ class LibGDXPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         val exts = project.extensions.create("libgdx", LibGDXExtensions::class.java)
-
         exts.assetsDirectory = exts.assetsDirectory ?: project.tryFindAssetsDirectory()
 
         project.subprojects.forEach {

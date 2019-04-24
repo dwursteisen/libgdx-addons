@@ -29,10 +29,20 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
 
         val sourceSets = project.extensions.getByName("sourceSets") as SourceSetContainer
 
+        addDependencies(project)
         addDistTask(project, sourceSets)
         addRunTask(project, sourceSets)
         addOpenJdkDownloadTask(project)
         addPackr(project)
+    }
+
+    private fun addDependencies(project: Project) {
+        val version = exts.version
+
+        project.dependencies.add("implementation", project.dependencies.project(mapOf("path" to ":core")))
+        project.dependencies.add("implementation", "com.badlogicgames.gdx:gdx-backend-lwjgl:$version")
+        project.dependencies.add("implementation", "com.badlogicgames.gdx:gdx-platform:$version:natives-desktop")
+        project.dependencies.add("implementation", "org.jetbrains.kotlin:kotlin-stdlib")
     }
 
     private fun addOpenJdkDownloadTask(project: Project) {
