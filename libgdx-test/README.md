@@ -9,7 +9,7 @@ Thanks to a DSL, you can create a specific scenario to test
 your game and take automatic screenshots or recording.
 
 
-## How to use it ?
+## How to use it?
 
 
 Add the JUnit Rule `LibGdxRule` to your unit test

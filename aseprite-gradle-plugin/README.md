@@ -2,21 +2,11 @@
 
 Add new task to gradle which export your aseprite file to png and json
 
-## How to use it ?
+## How to use it?
 
 Add the plugin as build gradle dependencies
 
-```
-buildscript {
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
-    dependencies {
-        // you can grab the lastest version here: https://jitpack.io/#dwursteisen/libgdx-addons
-        classpath "com.github.dwursteisen.libgdx:aseprite-plugin:<lastest>"
-    }
-}
-```
+Read the main [How to use it](../README.md#how-to-use-it)
 
 Activate the plugin and add an aseprite task
 

@@ -149,5 +149,5 @@ create transitions between states.
 ### Example of use
 
 - [SuperJumper](https://github.com/dwursteisen/ashley-superjumper) using this `StateEngineSystem` 
-  - [PlatformSystem](https://github.com/dwursteisen/ashley-superjumper/blob/master/core/src/main/kotlin/com/github/dwursteisen/superjumper/systems/PlatformSystem.kt)
-  - [BobSystem](https://github.com/dwursteisen/ashley-superjumper/blob/master/core/src/main/kotlin/com/github/dwursteisen/superjumper/systems/BobSystem.kt)  
+- [PlatformSystem](https://github.com/dwursteisen/ashley-superjumper/blob/master/core/src/main/kotlin/com/github/dwursteisen/superjumper/systems/PlatformSystem.kt)
+- [BobSystem](https://github.com/dwursteisen/ashley-superjumper/blob/master/core/src/main/kotlin/com/github/dwursteisen/superjumper/systems/BobSystem.kt)  
