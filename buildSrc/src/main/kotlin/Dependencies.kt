@@ -8,6 +8,8 @@ object Version {
     val gif = "1.4"
     val intellij = "0.5"
     val download = "3.4.3"
+    val kotlin = "1.3.30"
+    val kotlinpoet = "1.2.0"
 }
 
 object Dependencies {
@@ -17,7 +19,7 @@ object Dependencies {
     val gdx_lwjgl = "com.badlogicgames.gdx:gdx-backend-lwjgl:${Version.gdx}"
     val gdx_desktop = "com.badlogicgames.gdx:gdx-platform:${Version.gdx}:natives-desktop"
     val gif = "com.madgag:animated-gif-lib:${Version.gif}"
-
+    val kotlinpoet = "com.squareup:kotlinpoet:${Version.kotlinpoet}"
 }
 
 object TestDependencies {
@@ -27,6 +29,7 @@ object TestDependencies {
 }
 
 object Plugins {
+    val kotlin_gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin-api:${Version.kotlin}"
     val intellij = "org.jetbrains.gradle.plugin.idea-ext:org.jetbrains.gradle.plugin.idea-ext.gradle.plugin:${Version.intellij}"
     val download = "de.undercouch:gradle-download-task:${Version.download}"
 }

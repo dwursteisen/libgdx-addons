@@ -12,4 +12,4 @@ include("admob-addons:admob-desktop")
 include("packr-gradle-plugin")
 include("aseprite-gradle-plugin")
 include("libgdx-gradle-plugin")
-
+include("assets-gradle-plugin")

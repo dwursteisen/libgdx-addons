@@ -58,6 +58,7 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
     }
 
     private fun addPackr(project: Project) {
+        // TODO: Create extensions and apply the Packr plugin instead.
         val task = project.tasks.create("packr-macosx", PackrTask::class.java) {
             it.group = "packr"
             it.classpath = project.tasks.getByPath("dist").outputs.files.singleFile

@@ -1,8 +1,12 @@
 package com.github.dwursteisen.libgdx.gradle.internal
 
+import com.github.dwursteisen.libgdx.assets.AssetsPluginExtension
+import com.github.dwursteisen.libgdx.assets.AssetsTask
 import com.github.dwursteisen.libgdx.gradle.LibGDXExtensions
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import java.io.File
 
 class CorePlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
     override fun apply(project: Project) {
@@ -16,6 +20,26 @@ class CorePlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
         val version = exts.version
         project.dependencies.add("api", "com.badlogicgames.gdx:gdx:$version")
         project.dependencies.add("implementation", "org.jetbrains.kotlin:kotlin-stdlib")
+
+        addAssetsTask(project)
+    }
+
+    private fun addAssetsTask(project: Project) {
+        project.apply { it.plugin("assets") }
+
+        project.extensions.configure(AssetsPluginExtension::class.java) {
+            it.assetsDirectory = exts.assetsDirectory?.let { f -> project.files(f) }
+            it.assetsClass = File(project.buildDir, "generated/Assets.kt")
+        }
+
+        project.afterEvaluate {
+            val assets = it.tasks.withType(AssetsTask::class.java)
+            val compileKotlinTask = it.tasks.withType(KotlinCompile::class.java)
+            compileKotlinTask.forEach { compiler ->
+                compiler.dependsOn(assets)
+            }
+
+        }
     }
 
 }
