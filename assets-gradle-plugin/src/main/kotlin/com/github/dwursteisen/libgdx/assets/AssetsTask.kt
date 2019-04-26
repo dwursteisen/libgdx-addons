@@ -26,10 +26,9 @@ open class AssetsTask : DefaultTask() {
 
     @TaskAction
     fun generate() {
-
-        val objectName = output?.nameWithoutExtension ?: expected("Output file name")
-        val file = FileSpec.builder("", objectName)
-        val builder = TypeSpec.objectBuilder(objectName)
+        val securedOutput = output ?: expected(AssetsTask::output::name.get())
+        val file = FileSpec.builder("", securedOutput.nameWithoutExtension)
+        val builder = TypeSpec.objectBuilder(securedOutput.nameWithoutExtension)
 
         files?.files?.forEach {
             val base = if (it.isDirectory) it else it.parentFile
@@ -37,8 +36,7 @@ open class AssetsTask : DefaultTask() {
         }
 
         file.addType(builder.build())
-        file.build().writeTo(output?.parentFile ?: expected("Output file name"))
-
+        file.build().writeTo(securedOutput.parentFile ?: expected("Output file name"))
     }
 
     private fun appendDirectory(current: File, base: File, builder: TypeSpec.Builder, prefix: String = "") {

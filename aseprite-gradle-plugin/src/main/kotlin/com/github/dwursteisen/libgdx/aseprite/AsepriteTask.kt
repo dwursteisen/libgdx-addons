@@ -20,7 +20,7 @@ open class AsepriteTask : DefaultTask() {
 
 
     @Inject
-    open protected fun getExecActionFactory(): ExecActionFactory {
+    protected open fun getExecActionFactory(): ExecActionFactory {
         throw UnsupportedOperationException()
     }
 
