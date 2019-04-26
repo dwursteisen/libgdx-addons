@@ -1,10 +1,21 @@
 # libGDX Gradle Plugin
 
+libGDX Gradle plugin add all libgdx tasks to your project. 
+it's rely a lot on a default convention: your project will contains desktop game in a desktop directory, 
+the core in a core directory, …
 ## How to use it?
 
-1. Read the main [How to use it](../README.md#how-to-use-it)
-2. Your gradle project should have a `core` and a `desktop` directory.
-3. In your `build.gradle.kts`:
+- Your gradle project should have a `core` and a `desktop` directory.
+- In your `settings.gradle.kts`:
+
+```kotlin
+sourceControl {
+    gitRepository(uri("https://github.com/dwursteisen/libgdx-addons.git")) {
+        producesModule("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin")
+    }
+}
+```
+- In your `build.gradle.kts`:
 ```
 buildscript {
     dependencies {
@@ -20,7 +31,16 @@ project.configure<LibGDXExtensions> {
 }
 ```
 
-### Example
+## Features
+
+- Add a IntelliJ running configuration;
+- Add `run` gradle task (to run the game from Gradle);
+- Add `dist` gradle task (to create a fat jar of your game);
+- Add packr-&lt;os&gt; tasks to create a bundled app of your game;
+- Add a `assets` task which create a `Assets` class with all your assets name (to avoid naming mistakes);
+- Add `libgdx` libraries as dependency;
+- Add `Kotlin` libraries as dependency.
+## Example
 
 See [libgdx-sample](https://github.com/dwursteisen/libgdx-sample)
 
