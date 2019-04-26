@@ -30,6 +30,8 @@ class AssetsPluginTest {
     fun `it should create a Assets object`() {
         val asset = File(temporaryFolder.newFolder("src", "main", "assets"), "example.txt")
         asset.writeText("hello world")
+        val inFolder = File(temporaryFolder.newFolder("src", "main", "assets", "folder"), "in_folder.txt")
+        inFolder.writeText("hello folder")
 
         val result = GradleRunner.create()
             .withProjectDir(temporaryFolder.root)
@@ -38,6 +40,9 @@ class AssetsPluginTest {
             .build()
 
         assert(result.task(":assets")?.outcome == TaskOutcome.SUCCESS)
-        assert(File(temporaryFolder.root, "build/generated/Assets.kt").isFile)
+        val generated = File(temporaryFolder.root, "build/generated/Assets.kt")
+        assert(generated.isFile)
+        assert(generated.readText().contains("example.txt"))
+        assert(generated.readText().contains("folder/in_folder.txt"))
     }
 }
