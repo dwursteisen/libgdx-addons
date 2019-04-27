@@ -57,9 +57,13 @@ See [libgdx-sample](https://github.com/dwursteisen/libgdx-sample)
 - [x] Add `run` task on desktop module to run the jar;
 - [ ] Add task `packr` on desktop to build the executable version;
 - [x] Detect main class;
+- [ ] Generate main class if missing;
 - [x] Add IntelliJ run configuration.
 
 ### Android
-- [ ] Copy native libs on Android;
+- [ ] Add needed dependency repositories
+- [x] Copy native libs on Android;
 - [ ] Add run task on Android;
+- [ ] Generate AndroidManifest.xml if missing;
+- [ ] Generate main class if missing;
 - [ ] Add tasks to increment version on Android.

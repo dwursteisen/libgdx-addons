@@ -1,6 +1,7 @@
 object Version {
     val ashley = "1.7.3"
     val assertJ = "3.8.0"
+    val android = "3.4.0"
     val mockito = "2.8.47"
     val ktx = "1.9.9-b1"
     val gdx = "1.9.9"
@@ -32,4 +33,5 @@ object Plugins {
     val kotlin_gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin-api:${Version.kotlin}"
     val intellij = "org.jetbrains.gradle.plugin.idea-ext:org.jetbrains.gradle.plugin.idea-ext.gradle.plugin:${Version.intellij}"
     val download = "de.undercouch:gradle-download-task:${Version.download}"
+    val android = "com.android.tools.build:gradle:${Version.android}"
 }

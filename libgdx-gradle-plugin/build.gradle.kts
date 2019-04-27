@@ -1,4 +1,5 @@
 repositories {
+    google()
     maven {
         url = uri("https://plugins.gradle.org/m2/")
     }
@@ -11,5 +12,6 @@ dependencies {
     api(Plugins.intellij)
     api(Plugins.kotlin_gradle)
     api(Plugins.download)
+    api(Plugins.android)
     testImplementation(TestDependencies.junit)
 }

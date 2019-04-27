@@ -18,7 +18,7 @@ class LibGDXPlugin : Plugin<Project> {
             when (it.name) {
                 "core" -> CorePlugin(exts)
                 "desktop" -> DesktopPlugin(exts)
-                "android" -> AndroidPlugin()
+                "android" -> AndroidPlugin(exts)
                 else -> NopPlugin()
             }.apply(it)
         }
