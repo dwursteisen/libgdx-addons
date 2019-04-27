@@ -16,6 +16,9 @@ class ConfigurationPlugin : Plugin<Project> {
         project.plugins.apply("org.gradle.java-library")
         project.plugins.apply("com.ofg.uptodate")
 
+        // for jitpack
+        project.plugins.apply("maven")
+
         project.tasks.withType<KotlinCompile>().forEach {
             it.kotlinOptions {
                 // force the compilation at 1.8 as it may target Android platform
