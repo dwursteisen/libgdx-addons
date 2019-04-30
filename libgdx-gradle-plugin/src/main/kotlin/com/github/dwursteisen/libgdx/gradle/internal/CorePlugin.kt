@@ -7,6 +7,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import java.io.File
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
 class CorePlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
     override fun apply(project: Project) {
@@ -22,6 +23,20 @@ class CorePlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
         project.dependencies.add("implementation", "org.jetbrains.kotlin:kotlin-stdlib")
 
         addAssetsTask(project)
+        setupKotlin(project)
+    }
+
+    private fun setupKotlin(project: Project) {
+        project.afterEvaluate {
+            project.tasks.withType(KotlinCompile::class.java).forEach {
+                it.kotlinOptions {
+                    this as KotlinJvmOptions
+                    // force the compilation at 1.8 as it may target Android platform
+                    this.jvmTarget = "1.8"
+                    this.freeCompilerArgs = listOf("-Xjsr305=strict")
+                }
+            }
+        }
     }
 
     private fun addAssetsTask(project: Project) {

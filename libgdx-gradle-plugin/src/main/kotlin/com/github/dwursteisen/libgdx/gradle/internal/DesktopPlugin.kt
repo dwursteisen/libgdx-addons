@@ -10,6 +10,8 @@ import org.gradle.api.file.FileVisitor
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.bundling.Jar
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -34,6 +36,21 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
         addRunTask(project, sourceSets)
         addOpenJdkDownloadTask(project)
         addPackr(project)
+
+        setupKotlin(project)
+    }
+
+    private fun setupKotlin(project: Project) {
+        project.afterEvaluate {
+            project.tasks.withType(KotlinCompile::class.java).forEach {
+                it.kotlinOptions {
+                    this as KotlinJvmOptions
+                    // force the compilation at 1.8 as it may target Android platform
+                    this.jvmTarget = "1.8"
+                    this.freeCompilerArgs = listOf("-Xjsr305=strict")
+                }
+            }
+        }
     }
 
     private fun addDependencies(project: Project) {

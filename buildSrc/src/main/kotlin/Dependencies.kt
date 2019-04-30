@@ -30,7 +30,7 @@ object TestDependencies {
 }
 
 object Plugins {
-    val kotlin_gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin-api:${Version.kotlin}"
+    val kotlin_gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.kotlin}"
     val intellij = "org.jetbrains.gradle.plugin.idea-ext:org.jetbrains.gradle.plugin.idea-ext.gradle.plugin:${Version.intellij}"
     val download = "de.undercouch:gradle-download-task:${Version.download}"
     val android = "com.android.tools.build:gradle:${Version.android}"
