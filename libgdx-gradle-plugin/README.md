@@ -58,6 +58,7 @@ See [libgdx-sample](https://github.com/dwursteisen/libgdx-sample)
 - [x] Detect Android / Desktop / Core module;
 - [x] Add kotlin support by default;
 - [x] Generate Assets class with all all assets file name (like `R class in Android);
+- [ ] create a fat jar do not depends from external repositories?
 - [x] Add libgdx dependencies on each modules.
 
 ### Desktop
