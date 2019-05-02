@@ -6,8 +6,8 @@ import com.github.dwursteisen.libgdx.gradle.LibGDXExtensions
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
-import java.io.File
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
+import java.io.File
 
 class CorePlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
     override fun apply(project: Project) {

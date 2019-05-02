@@ -5,29 +5,37 @@ it's rely a lot on a default convention: your project will contains desktop game
 the core in a core directory, …
 ## How to use it?
 
-- Your gradle project should have a `core` and a `desktop` directory.
-- In your `settings.gradle.kts`:
+- Your gradle project **SHOULD** have, at least, a `core` and a `desktop` and/or `android` directory.
 
-```kotlin
-sourceControl {
-    gitRepository(uri("https://github.com/dwursteisen/libgdx-addons.git")) {
-        producesModule("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin")
-    }
-}
-```
 - In your `build.gradle.kts`:
 ```
 buildscript {
     dependencies {
-       classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:latest.integration")
+        // see https://jitpack.io/#dwursteisen/libgdx-addons
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:<version>")
+    }
+
+    repositories {
+        mavenCentral()
+        google()
+        maven { url = uri("https://oss.sonatype.org/content/repositories/releases/") }
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
 apply(plugin = "libgdx")
 
-project.configure<LibGDXExtensions> {
-    mainClass = "com.your.package.MainClass"
-    assetsDirectory = project.file("core/assets")
+allprojects {
+
+    repositories {
+        mavenCentral()
+        google()
+        jcenter()
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+        maven { url = uri("https://oss.sonatype.org/content/repositories/releases/") }
+    }
+
 }
 ```
 
@@ -57,7 +65,7 @@ See [libgdx-sample](https://github.com/dwursteisen/libgdx-sample)
 - [x] Add `run` task on desktop module to run the jar;
 - [ ] Add task `packr` on desktop to build the executable version;
 - [x] Detect main class;
-- [ ] Generate main class if missing;
+- [x] Generate main class if missing;
 - [x] Add IntelliJ run configuration.
 
 ### Android
