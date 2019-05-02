@@ -1,12 +1,12 @@
 package com.github.dwursteisen.libgdx.gradle.internal
 
 import com.github.dwursteisen.libgdx.gradle.LibGDXExtensions
+import com.github.dwursteisen.libgdx.gradle.internal.tasks.GenerateClassReference
+import com.github.dwursteisen.libgdx.gradle.internal.tasks.GenerateCodeTask
 import com.github.dwursteisen.libgdx.packr.PackrTask
 import de.undercouch.gradle.tasks.download.Download
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.file.FileVisitDetails
-import org.gradle.api.file.FileVisitor
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.bundling.Jar
@@ -14,13 +14,14 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.File
 
 class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
 
     private val logger: Logger = LoggerFactory.getLogger(DesktopPlugin::class.java)
 
     override fun apply(project: Project) {
-        // Add Java plugin to access sourceSets extensions
+        // Add Java gradle to access sourceSets extensions
         project.apply { it.plugin("org.gradle.java") }
         project.apply { it.plugin("org.jetbrains.kotlin.jvm") }
         project.apply { it.plugin("org.jetbrains.gradle.plugin.idea-ext") }
@@ -31,6 +32,7 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
 
         val sourceSets = project.extensions.getByName("sourceSets") as SourceSetContainer
 
+        addGenerateMainClass(project)
         addDependencies(project)
         addDistTask(project, sourceSets)
         addRunTask(project, sourceSets)
@@ -38,6 +40,45 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
         addPackr(project)
 
         setupKotlin(project)
+    }
+
+    private fun addGenerateMainClass(project: Project) {
+        val ref = project.tasks.create("generate-desktop-main-ref", GenerateClassReference::class.java) {
+            it.group = "libgdx"
+            it.mainClassFile = exts.mainClass?.replace(".", "/").let { f -> project.file("$f.kt") }
+                ?: project.file("src/main/kotlin/libgdx/MainClass.kt")
+            it.mainClassReference = File(project.buildDir, "generated/main-class-reference.txt")
+        }
+
+        val gen = project.tasks.create("generate-desktop-main", GenerateCodeTask::class.java) {
+            it.group = "libgdx"
+            it.description = "Generate Default Main class"
+
+            it.content = """
+package libgdx
+
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
+
+
+    object MainClass {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            LwjglApplication(TODO("Replace With Your Game Class"), LwjglApplicationConfiguration().apply {
+                width = 600
+                height = 600
+            })
+        }
+}
+ """
+            val classpath = exts.mainClass?.replace(".", "/")?.let { f -> "$f.kt" }
+                ?: "src/main/kotlin/libgdx/MainClass.kt"
+            it.mainClassFile = project.file(classpath)
+            it.mainClassReference = File(project.buildDir, "generated/main-class-reference.txt")
+        }
+
+        project.tasks.getByName("classes").dependsOn("generate-desktop-main")
+        gen.dependsOn(ref)
     }
 
     private fun setupKotlin(project: Project) {
@@ -55,6 +96,8 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
 
     private fun addDependencies(project: Project) {
         val version = exts.version
+
+        project.repositories.mavenCentral()
 
         project.dependencies.add("implementation", project.dependencies.project(mapOf("path" to ":core")))
         project.dependencies.add("implementation", "com.badlogicgames.gdx:gdx-backend-lwjgl:$version")
@@ -128,38 +171,9 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
     }
 
     private fun tryFindMainClass(project: Project): String? {
-        val sourceSets = project.extensions.getByName("sourceSets") as SourceSetContainer
-        val mainClassVisitor = MainClassVisitor()
-        sourceSets.first { it.name == "main" }
-                .allSource
-                .asFileTree
-                .visit(mainClassVisitor)
-
-        return mainClassVisitor.main
-    }
-
-    inner class MainClassVisitor(var main: String? = null) : FileVisitor {
-        override fun visitFile(fileDetails: FileVisitDetails) {
-            logger.info(fileDetails.name)
-            val use = fileDetails.open().use {
-                it.bufferedReader()
-                        .lineSequence()
-                        .filter { line -> line.contains("fun main(") || line.contains("import com.badlogic.gdx.backends.lwjgl.LwjglApplication") }
-                        .count() >= 2
-
-            }
-
-            if (use) {
-                main = fileDetails.path
-                        .replace(".kt", "")
-                        .replace("/", ".")
-            }
+        return project.tryFindClassWhichMatch { lines ->
+            lines.filter { line -> line.contains("fun main(") || line.contains("import com.badlogic.gdx.backends.lwjgl.LwjglApplication") }
+                .count() >= 2
         }
-
-        override fun visitDir(dirDetails: FileVisitDetails) {
-            logger.info(dirDetails.name)
-        }
-
     }
-
 }

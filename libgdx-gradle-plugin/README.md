@@ -61,9 +61,10 @@ See [libgdx-sample](https://github.com/dwursteisen/libgdx-sample)
 - [x] Add IntelliJ run configuration.
 
 ### Android
-- [ ] Add needed dependency repositories
+- [ ] Add needed dependency repositories ⚠️ Didn't find how to do it! Can you help me?
 - [x] Copy native libs on Android;
 - [ ] Add run task on Android;
 - [ ] Generate AndroidManifest.xml if missing;
 - [ ] Generate main class if missing;
+- [ ] Detect Android SDK location (check ANDROID_SDK_ROOT / local.properties). If missing, try to guess where the SDK is
 - [ ] Add tasks to increment version on Android.

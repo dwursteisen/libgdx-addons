@@ -1,12 +1,19 @@
+apply { plugin("java-gradle-plugin") }
+
 repositories {
+    mavenCentral()
     google()
     maven {
         url = uri("https://plugins.gradle.org/m2/")
     }
+    jcenter()
+    maven {
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+    }
 }
 dependencies {
-    implementation(kotlin("stdlib"))
-    implementation(gradleApi())
+    compileOnly(kotlin("stdlib"))
+    compileOnly(gradleApi())
     api(project(":packr-gradle-plugin"))
     api(project(":assets-gradle-plugin"))
     api(Plugins.intellij)
@@ -14,4 +21,5 @@ dependencies {
     api(Plugins.download)
     api(Plugins.android)
     testImplementation(TestDependencies.junit)
+    testImplementation(gradleTestKit())
 }

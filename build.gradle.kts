@@ -1,5 +1,8 @@
 import internal.ConfigurationPlugin
 
+plugins {
+    kotlin
+}
 allprojects {
 
     apply { plugin(ConfigurationPlugin::class) }
