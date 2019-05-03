@@ -75,7 +75,7 @@ allprojects {
 
         assert(result.task(":desktop:generate-desktop-main")?.outcome == TaskOutcome.SUCCESS)
 
-        val generated = File(temporaryFolder.root, "desktop/src/main/kotlin/libgdx/Main.kt")
+        val generated = File(temporaryFolder.root, "desktop/src/main/kotlin/libgdx/MainClass.kt")
         assert(generated.isFile)
     }
 }
