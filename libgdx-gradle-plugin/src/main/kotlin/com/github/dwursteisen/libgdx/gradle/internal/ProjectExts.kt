@@ -14,8 +14,8 @@ fun Project.tryFindAssetsDirectory(): File? {
 fun Project.tryFindClassWhichMatch(filter: (Sequence<String>) -> Boolean): String? {
     val sourceSets = project.extensions.getByName("sourceSets") as SourceSetContainer
     val mainClassVisitor = MainClassVisitor(filter)
-    sourceSets.first { it.name == "main" }
-        .allSource
+    val main = sourceSets.firstOrNull { it.name == "main" } ?: return null
+    main.allSource
         .asFileTree
         .visit(mainClassVisitor)
 

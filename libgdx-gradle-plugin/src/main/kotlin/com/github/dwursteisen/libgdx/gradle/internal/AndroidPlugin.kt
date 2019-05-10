@@ -9,7 +9,6 @@ import java.io.File
 
 class AndroidPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
     override fun apply(project: Project) {
-        try {
             project.apply { it.plugin("android") }
             project.apply { it.plugin("kotlin-android") }
 
@@ -17,14 +16,13 @@ class AndroidPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
             addDefaultLibraries(project)
             setupAndroidExtension(project)
             createNativesLibCopyTasks(project)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
     }
 
     private fun setupMainClass(project: Project, exts: LibGDXExtensions) {
-        exts.androidMainClass =
-            exts.androidMainClass ?: tryFindMainClass(project) ?: createMainClass() ?: tryFindMainClass(project)
+        project.beforeEvaluate {
+            exts.androidMainClass =
+                exts.androidMainClass ?: tryFindMainClass(project) ?: createMainClass() ?: tryFindMainClass(project)
+        }
     }
 
     private fun tryFindMainClass(project: Project): String? {
@@ -40,7 +38,8 @@ class AndroidPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
         // TODO: 1- create a String with all Kotlin code
         // TODO: 2- write this String on the disk
         // TODO: 3- Return the path of this new file.
-        TODO("return path of the nerwly created class")
+        // TODO("return path of the nerwly created class")
+        return ""
     }
 
     private fun addDefaultLibraries(project: Project) {
@@ -58,7 +57,6 @@ class AndroidPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
     private fun setupAndroidExtension(project: Project) {
         val androidExts = project.extensions.getByName("android") as AppExtension
         project.beforeEvaluate {
-
             androidExts.compileSdkVersion = androidExts.compileSdkVersion ?: "android-28"
             androidExts.defaultConfig.minSdkVersion(21)
             androidExts.defaultConfig.targetSdkVersion(28)
@@ -118,5 +116,4 @@ class AndroidPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
             it.include("*.so")
         }
     }
-
 }
