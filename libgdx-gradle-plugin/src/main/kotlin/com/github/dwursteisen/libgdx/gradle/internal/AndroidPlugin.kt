@@ -51,6 +51,8 @@ class AndroidPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
             project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-armeabi")
             project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-armeabi-v7a")
             project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-x86")
+            project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-arm64-v8a")
+            project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-x86_64")
         }
     }
 
@@ -73,21 +75,29 @@ class AndroidPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
                 .groupBy { it.name.replace("gdx-platform-([0-9]*\\.[0-9]*\\.[0-9]*-)".toRegex(), "") }
 
             copyLib(
-                project,
-                "armeabi",
-                files.getValue("natives-armeabi.jar").first()
+                project = project,
+                directoryName = "armeabi",
+                nativeFile = files.getValue("natives-armeabi.jar").first()
             )
-
             copyLib(
-                project,
-                "armeabi-v7a",
-                files.getValue("natives-armeabi-v7a.jar").first()
+                project = project,
+                directoryName = "armeabi-v7a",
+                nativeFile = files.getValue("natives-armeabi-v7a.jar").first()
             )
-
             copyLib(
-                project,
-                "x86",
-                files.getValue("natives-x86.jar").first()
+                project = project,
+                directoryName = "x86",
+                nativeFile = files.getValue("natives-x86.jar").first()
+            )
+            copyLib(
+                project = project,
+                directoryName = "arm64-v8a",
+                nativeFile = files.getValue("natives-arm64-v8a.jar").first()
+            )
+            copyLib(
+                project = project,
+                directoryName = "x86_64",
+                nativeFile = files.getValue("natives-x86_64.jar").first()
             )
         }
 
@@ -96,7 +106,9 @@ class AndroidPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
                 packageTask.dependsOn(
                     "copy-armeabi",
                     "copy-armeabi-v7a",
-                    "copy-x86"
+                    "copy-x86",
+                    "copy-arm64-v8a",
+                    "copy-x86_64"
                 )
             }
         }
