@@ -46,7 +46,6 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
         val ref = project.tasks.create("generate-desktop-main-ref", GenerateClassReference::class.java) {
             it.group = "libgdx"
             it.mainClassFile = exts.mainClass?.replace(".", "/").let { f -> project.file("$f.kt") }
-                ?: project.file("src/main/kotlin/libgdx/MainClass.kt")
             it.mainClassReference = File(project.buildDir, "generated/main-class-reference.txt")
         }
 

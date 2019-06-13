@@ -9,13 +9,13 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
 import ktx.log.debug
 
-
 interface EventListener {
     fun onEvent(event: Event, eventData: EventData)
 }
 
 // FIXME: I should be abble to target multiple stuff at once
 class EventData(var event: Int = Int.MIN_VALUE, var target: Entity? = null, var body: Any? = null) : Pool.Poolable {
+
     override fun reset() {
         event = Int.MIN_VALUE
         target = null
@@ -24,7 +24,6 @@ class EventData(var event: Int = Int.MIN_VALUE, var target: Entity? = null, var 
 }
 
 data class EventTimer(var timer: Float = 0f, val event: Event, val data: EventData)
-
 
 /**
  * Simple Event bus.
@@ -131,6 +130,12 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
         }
     }
 
+    fun emitData(event: Event, body: () -> Any? = { null }) {
+        val data = createEventData()
+        data.body = body()
+        emit(event, data)
+    }
+
     fun emitLater(delta: Float, event: Event, entity: Entity, data: EventData = createEventData()) {
         data.target = entity
         emitLater(delta, event, data)
@@ -142,7 +147,6 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
         emitterLatter.add(timer)
     }
 
-
     fun register(eventListener: EventListener, vararg events: Event) {
         events.forEach {
             val lst = listeners[it]
@@ -153,7 +157,6 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
             }
         }
     }
-
 
     fun update(delta: Float) {
 
@@ -180,7 +183,6 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
 
         emitterMirror.clear()
         emitterLatterMirror.clear()
-
     }
 
     private fun invoke(event: Event, data: EventData) {
