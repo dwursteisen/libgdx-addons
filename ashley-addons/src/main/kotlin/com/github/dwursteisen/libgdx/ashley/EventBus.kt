@@ -109,6 +109,7 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
     private var emitterLatter: MutableList<EventTimer> = mutableListOf()
     private var emitterLatterMirror: MutableList<EventTimer> = mutableListOf()
 
+    @Deprecated("This method will be marked as private in future release. Use #emit + lambda version instead.")
     fun createEventData(): EventData = pool.obtain()
 
     fun emit(event: Event, entity: Entity, data: EventData = createEventData()) {
@@ -149,12 +150,8 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
 
     fun register(eventListener: EventListener, vararg events: Event) {
         events.forEach {
-            val lst = listeners[it]
-            if (lst == null) {
-                listeners.put(it, listOf(eventListener))
-            } else {
-                listeners.put(it, lst + eventListener)
-            }
+            val lst = listeners[it] ?: emptyList()
+            listeners[it] = lst + eventListener
         }
     }
 
