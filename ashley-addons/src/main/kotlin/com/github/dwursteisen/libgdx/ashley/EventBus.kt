@@ -7,13 +7,14 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
+import com.github.dwursteisen.libgdx.ashley.fsm.Event
+import com.github.dwursteisen.libgdx.ashley.fsm.StateMachineSystem
 import ktx.log.debug
 
 interface EventListener {
     fun onEvent(event: Event, eventData: EventData)
 }
 
-// FIXME: I should be abble to target multiple stuff at once
 class EventData(var event: Int = Int.MIN_VALUE, var target: Entity? = null, var body: Any? = null) : Pool.Poolable {
 
     override fun reset() {
@@ -31,15 +32,14 @@ data class EventTimer(var timer: Float = 0f, val event: Event, val data: EventDa
  * - register listener through register method
  * - The update method should be called from the main loop
  *
- *
  */
-class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
+class EventBus(private val eventMapper: Map<Int, String> = emptyMap()) {
 
     private val pool: Pool<EventData> = object : Pool<EventData>() {
         override fun newObject(): EventData = EventData()
     }
 
-    class EventInputProcessor(val bus: EventBus) : InputAdapter() {
+    class EventInputProcessor(private val bus: EventBus) : InputAdapter() {
 
         private val touchDown = Vector2()
         private val touchUp = Vector2()
@@ -59,7 +59,6 @@ class EventBus(val eventMapper: Map<Int, String> = emptyMap()) {
         }
 
         override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-
             val screenTouchData = bus.createEventData()
             touchDown.set(screenX.toFloat(), screenY.toFloat())
             screenTouchData.body = touchDown

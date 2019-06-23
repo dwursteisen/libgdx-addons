@@ -3,15 +3,26 @@ package com.github.dwursteisen.libgdx.ashley
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.Pool
+import com.github.dwursteisen.libgdx.ashley.fsm.EntityState
 
-data class StateComponent(var state: Int = 0,
-                          @JvmField
-                          var time: Float = 0f,
-                          var status: EntityState = EntityState.STATE_NOP
-) : Component {
-    fun get() = state
-    fun set(s: Int) {
-        state = s
+/**
+ * An entity can hold states using [StateComponent].
+ * A state can be assign for one component.
+ *
+ */
+open class StateComponent() : Component, Pool.Poolable {
+
+    var time: Float = 0f
+        internal set
+
+    internal var status: MutableMap<Class<out StateComponent>, EntityState> = mutableMapOf()
+    internal var timeReset: MutableMap<Class<out StateComponent>, Float> = mutableMapOf()
+
+    override fun reset() {
+        time = 0f
+        status.clear()
+        timeReset.clear()
     }
 }
 
