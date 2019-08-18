@@ -41,4 +41,13 @@ apply(plugin = "libgdx")
 ----
 
 Run the command `gradlew build`: it will download gradle if needed and download all dependencies and create the minimal setup.
-Once done, refresh the project in IntelliJ.
+Once done, it might be long depending of your Internet connection, refresh the project in IntelliJ.
+
+The project is now ready. You can run it by using the
+https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configurations.html[Run Configuration] added in IntelliJ
+
+image::media/create_game_03.png[]
+
+== Create your Game class
+
+WIP 

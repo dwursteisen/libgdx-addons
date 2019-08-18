@@ -5,7 +5,7 @@
 :icons:
 :data-uri:
 :lang: en
-:source-highlighter: pygments
+:source-highlighter: coderay
 
 https://libgdx.badlogicgames.com/[LibGDX] is a gaming framework which works on the JVM.
 Using it, you can create a game for mobile, desktop and web platform.
