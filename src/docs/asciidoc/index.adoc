@@ -1,0 +1,20 @@
+= LibGDX Addons
+
+:doctype: book
+:toc:
+:icons:
+:data-uri:
+:lang: en
+:source-highlighter: pygments
+
+https://libgdx.badlogicgames.com/[LibGDX] is a gaming framework which works on the JVM.
+Using it, you can create a game for mobile, desktop and web platform.
+
+https://kotlinlang.org/[Kotlin] is a language compatible with the JVM (Java Virtual Machine) platform.
+It's like Java but shorter.
+
+LibGDX is an addons to ease the development of games using libGDX and Kotlin.
+Get ride of all boilerplate to dive directly into the code of your game.
+
+include::01_create_project.adoc[]
+

@@ -1,0 +1,51 @@
+== Create your first game
+
+LibGDX use https://gradle.org[gradle] as a build system.
+LibGDX-addons propose a gradle plugin to take care of all gradle setup, for all platform so you don't have to manage it.
+
+=== Create a simple gradle project
+
+Create your first game by using https://www.jetbrains.com/idea/[IntelliJ].
+Click in `File` > `New Project`
+
+image::media/create_game_01.png[]
+
+Pick `Gradle` then tick `Kotlin DSL build script`, choose `Kotlin/JVM` and go to the next screen by clicking `Next`.
+
+image::media/create_game_02.png[]
+
+Fill the information asked and click `Next` until IntelliJ create your project.
+
+Create two folders: `core` and `desktop`.
+You can create a `android` folder too if you want https://developer.android.com/[Android] support.
+Add those directories into your `setting.gradle` file.
+
+.setting.gradle
+[source,groovy]
+----
+include("core", "desktop") // or include("core", "desktop", "android")
+----
+
+Open the file `build.gradle.kts` and paste this configuration into.
+It adds necessary repositories for dependencies and add the https://github.com/dwursteisen/libgdx-addons/tree/master/libgdx-gradle-plugin[gradle libgdx plugin].
+
+.build.gradle.kts
+[source,kotlin]
+----
+
+buildscript {
+    dependencies {
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:f1f9c569ff")
+    }
+
+    repositories {
+        mavenCentral()
+        google()
+        maven { url = uri("https://oss.sonatype.org/content/repositories/releases/") }
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+
+apply(plugin = "libgdx")
+----
