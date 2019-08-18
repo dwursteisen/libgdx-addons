@@ -16,16 +16,6 @@ image::media/create_game_02.png[]
 
 Fill the information asked and click `Next` until IntelliJ create your project.
 
-Create two folders: `core` and `desktop`.
-You can create a `android` folder too if you want https://developer.android.com/[Android] support.
-Add those directories into your `setting.gradle` file.
-
-.setting.gradle
-[source,groovy]
-----
-include("core", "desktop") // or include("core", "desktop", "android")
-----
-
 Open the file `build.gradle.kts` and paste this configuration into.
 It adds necessary repositories for dependencies and add the https://github.com/dwursteisen/libgdx-addons/tree/master/libgdx-gradle-plugin[gradle libgdx plugin].
 
@@ -49,3 +39,6 @@ buildscript {
 
 apply(plugin = "libgdx")
 ----
+
+Run the command `gradlew build`: it will download gradle if needed and download all dependencies and create the minimal setup.
+Once done, refresh the project in IntelliJ.
