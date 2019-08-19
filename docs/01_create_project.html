@@ -472,7 +472,7 @@ It adds necessary repositories for dependencies and add the <a href="https://git
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">buildscript {
     dependencies {
-        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:f1f9c569ff")
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:51f3fbe9f4")
     }
 
     repositories {
@@ -500,6 +500,19 @@ Once done, it might be long depending of your Internet connection, refresh the p
 <img src="media/create_game_03.png" alt="create game 03">
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The first run will crash! Because you need to create your first game class.
+See above for more information.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -507,7 +520,67 @@ Once done, it might be long depending of your Internet connection, refresh the p
 <h2 id="_create_your_game_class">Create your Game class</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>WIP</p>
+<p>Grab an image and copy it into the <code>assets</code> directory of the <code>core</code> module.
+You can find free image / sprite sheet on the <a href="https://opengameart.org/content/a-blocky-dungeon">OpenGameArt.org</a>.</p>
+</div>
+<div class="paragraph">
+<p>Run the command <code>./gradlew build</code>, the command will generate a new class <code>Assets</code> that will
+contains all of your assets name.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The use of the <code>Assets</code> object is not mandatory. But if your rename one of your assets,
+it&#8217;s practical to have a compilation error instead of your game crashing.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Create your game into the <code>core</code> directory and use it in <code>MainClass.kt</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">MyGame.kt</div>
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">class MyGame : Game() {
+
+    private lateinit var texture: Texture
+
+    private lateinit var batch: SpriteBatch
+
+    override fun create() {
+        texture = Texture(Assets.assets_dungeon_sheet_png)
+        batch = SpriteBatch()
+    }
+
+    override fun render() {
+        batch.begin()
+        batch.draw(texture, 0f, 0f)
+        batch.end()
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">MainClass.kt</div>
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">LwjglApplication(MyGame(), LwjglApplicationConfiguration().apply {
+                width = 600
+                height = 600
+})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you run your game, the texture will be displayed on the screen.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="media/create_game_04.png" alt="create game 04">
+</div>
 </div>
 </div>
 </div>
@@ -515,7 +588,7 @@ Once done, it might be long depending of your Internet connection, refresh the p
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Last updated 2019-08-18 23:40:57 +0200
+Last updated 2019-08-19 09:39:26 +0200
 </div>
 </div>
 </body>

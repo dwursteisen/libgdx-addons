@@ -25,7 +25,7 @@ It adds necessary repositories for dependencies and add the https://github.com/d
 
 buildscript {
     dependencies {
-        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:f1f9c569ff")
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:51f3fbe9f4")
     }
 
     repositories {
@@ -48,6 +48,53 @@ https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configuration
 
 image::media/create_game_03.png[]
 
+NOTE: The first run will crash! Because you need to create your first game class.
+See above for more information.
+
 == Create your Game class
 
-WIP 
+Grab an image and copy it into the `assets` directory of the `core` module.
+You can find free image / sprite sheet on the https://opengameart.org/content/a-blocky-dungeon[OpenGameArt.org].
+
+Run the command `./gradlew build`, the command will generate a new class `Assets` that will
+contains all of your assets name.
+
+NOTE: The use of the `Assets` object is not mandatory. But if your rename one of your assets,
+it's practical to have a compilation error instead of your game crashing.
+
+Create your game into the `core` directory and use it in `MainClass.kt`.
+
+.MyGame.kt
+[source,kotlin]
+----
+class MyGame : Game() {
+
+    private lateinit var texture: Texture
+
+    private lateinit var batch: SpriteBatch
+
+    override fun create() {
+        texture = Texture(Assets.assets_dungeon_sheet_png)
+        batch = SpriteBatch()
+    }
+
+    override fun render() {
+        batch.begin()
+        batch.draw(texture, 0f, 0f)
+        batch.end()
+    }
+}
+----
+
+.MainClass.kt
+[source,kotlin]
+----
+LwjglApplication(MyGame(), LwjglApplicationConfiguration().apply {
+                width = 600
+                height = 600
+})
+----
+
+If you run your game, the texture will be displayed on the screen.
+
+image::media/create_game_04.png[]

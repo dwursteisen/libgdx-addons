@@ -54,7 +54,7 @@ allprojects {
     }
 
     @Test
-    fun `it should mandatory folders`() {
+    fun `it should create mandatory folders`() {
         val settings = temporaryFolder.newFile("settings.gradle.kts")
 
         val result = GradleRunner.create()
