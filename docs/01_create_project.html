@@ -439,8 +439,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="paragraph">
 <p>LibGDX use <a href="https://gradle.org">gradle</a> as a build system.
-LibGDX-addons propose a gradle plugin to take care of all gradle setup,
-for all platform (Currently supported: Desktop and Android) so you don&#8217;t have to manage it.</p>
+You can use the <a href="https://libgdx.badlogicgames.com/download.html">official setup app</a> to create your game.
+Instead  LibGDX-addons propose a gradle plugin to take care of all gradle setup,
+for all platform (Currently supported: Desktop and Android) so you don&#8217;t have to manage it or update
+your gradle script.</p>
 </div>
 <div class="sect2">
 <h3 id="_setup_your_game">Setup your game</h3>
@@ -473,8 +475,7 @@ It adds necessary repositories for dependencies and add the <a href="https://git
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">buildscript {
     dependencies {
-        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:473c054
-")
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:ccbce4d")
     }
 
     repositories {
@@ -493,11 +494,17 @@ apply(plugin = "libgdx")</code></pre>
 <p>Run the command <code>gradlew build</code>: it will download gradle if needed and download all dependencies and create the minimal setup.
 Once done, it might be long depending of your Internet connection, refresh the project in IntelliJ.</p>
 </div>
+<div class="imageblock">
+<div class="content">
+<img src="media/create_game_02b.png" alt="create game 02b">
+</div>
+<div class="title">Figure 1. Your project when everything is ready</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_run_your_game">Run your game</h3>
 <div class="paragraph">
-<p>Refresh the gradle project in IntelliJ: your game project is now ready!
+<p>Your game project is now ready!
 A new <a href="https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configurations.html">Run Configuration</a> just appear in your IntelliJ.
 Click on <code>Add Configuration</code> and check <code>Application</code> run configurations. You will see a run configuration added in IntelliJ
 to run your game.</p>
@@ -606,8 +613,7 @@ the <a href="https://github.com/dwursteisen/libgdx-addons/tree/master/core-addon
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
     dependencies {
-        implementation("com.github.dwursteisen.libgdx-addons:core-addons:473c054
-")
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:ccbce4d")
     }
 }</code></pre>
 </div>
@@ -768,7 +774,7 @@ WIP
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Last updated 2019-08-20 22:13:15 +0200
+Last updated 2019-08-20 22:57:38 +0200
 </div>
 </div>
 </body>

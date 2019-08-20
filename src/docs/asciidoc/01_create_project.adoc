@@ -1,8 +1,10 @@
 == Getting started
 
 LibGDX use https://gradle.org[gradle] as a build system.
-LibGDX-addons propose a gradle plugin to take care of all gradle setup,
-for all platform (Currently supported: Desktop and Android) so you don't have to manage it.
+You can use the https://libgdx.badlogicgames.com/download.html[official setup app] to create your game.
+Instead  LibGDX-addons propose a gradle plugin to take care of all gradle setup,
+for all platform (Currently supported: Desktop and Android) so you don't have to manage it or update
+your gradle script.
 
 === Setup your game
 
@@ -43,6 +45,8 @@ apply(plugin = "libgdx")
 
 Run the command `gradlew build`: it will download gradle if needed and download all dependencies and create the minimal setup.
 Once done, it might be long depending of your Internet connection, refresh the project in IntelliJ.
+
+image::media/create_game_02b.png[title="Your project when everything is ready"]
 
 === Run your game
 

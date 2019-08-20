@@ -3,4 +3,5 @@ object Git {
         .exec("git rev-parse --short HEAD")
         .inputStream.bufferedReader()
         .readText()
+        .trimIndent()
 }
