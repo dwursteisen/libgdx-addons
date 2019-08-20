@@ -472,7 +472,8 @@ It adds necessary repositories for dependencies and add the <a href="https://git
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">buildscript {
     dependencies {
-        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:51f3fbe9f4")
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:1a6ec45
+")
     }
 
     repositories {
@@ -584,11 +585,113 @@ it&#8217;s practical to have a compilation error instead of your game crashing.
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_add_your_first_libgdx_addons">Add your first libgdx-addons</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It&#8217;s important to have a quick feedback loop while developing a game.
+For example, what&#8217;s the point of restarting your game when you just updated
+a texture from your game?</p>
+</div>
+<div class="paragraph">
+<p>To enable this feature, you need to add a dependency to
+the <a href="https://github.com/dwursteisen/libgdx-addons/tree/master/core-addons">libgdx core-addons</a>.</p>
+</div>
+<div class="paragraph">
+<p>Add this into your <code>build.gradle.kts</code> then refresh the project in your IDE:</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
+    dependencies {
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:1a6ec45
+")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can now update your game to use the asset manager of libgdx with <code>RefreshableTexture</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">MyGame.kt</div>
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">class MyGame : Game() {
+
+    private val assetManager: AssetManager = AssetManager()
+
+    private lateinit var batch: SpriteBatch
+
+    override fun create() {
+        // <b class="conum">(1)</b>
+        assetManager.setLoader(Texture::class.java, RefreshableTextureLoader(InternalFileHandleResolver()))
+        assetManager.load(Assets.assets_dungeon_sheet_png, Texture::class.java)
+        // <b class="conum">(2)</b>
+        assetManager.finishLoading()
+        batch = SpriteBatch()
+    }
+
+    override fun render() {
+        // <b class="conum">(3)</b>
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+        // <b class="conum">(4)</b>
+        val texture: Texture = assetManager[Assets.assets_dungeon_sheet_png]
+        batch.begin()
+        batch.draw(texture, 0f, 0f)
+        batch.end()
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Replace the default Texture Loader with the RefreshableTexture Loader;</p>
+</li>
+<li>
+<p>Force to load all assets before rendering the game;</p>
+</li>
+<li>
+<p>Clear the screen;</p>
+</li>
+<li>
+<p>Getting the texture from the asset manager.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Run your game and while the game is running, apply a modification on the texture file.
+As soon as you save the file, the texture will be updated in your game.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="media/create_game_05.gif" alt="create game 05">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The asset manager is not mandatory. But by using it, you can use the <code>RefreshableTexture</code>
+for the desktop version of your game and the default texture loader for your android game without
+having to change your whole code base.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Last updated 2019-08-19 09:39:26 +0200
+Last updated 2019-08-20 11:57:26 +0200
 </div>
 </div>
 </body>

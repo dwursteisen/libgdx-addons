@@ -1,3 +1,4 @@
+import groovy.lang.Closure
 import internal.ConfigurationPlugin
 import org.asciidoctor.gradle.AsciidoctorTask
 
@@ -16,6 +17,7 @@ tasks {
         dependsOn("asciidoctor-media")
         outputDir(file("docs"))
         separateOutputDirs = false
+        attributes(mapOf("gitCommit" to Git.commit()))
     }
 }
 

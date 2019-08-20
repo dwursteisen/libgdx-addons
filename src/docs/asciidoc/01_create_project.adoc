@@ -20,12 +20,12 @@ Open the file `build.gradle.kts` and paste this configuration into.
 It adds necessary repositories for dependencies and add the https://github.com/dwursteisen/libgdx-addons/tree/master/libgdx-gradle-plugin[gradle libgdx plugin].
 
 .build.gradle.kts
-[source,kotlin]
+[source,kotlin,subs=attributes+]
 ----
 
 buildscript {
     dependencies {
-        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:51f3fbe9f4")
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:{gitCommit}")
     }
 
     repositories {
@@ -98,3 +98,71 @@ LwjglApplication(MyGame(), LwjglApplicationConfiguration().apply {
 If you run your game, the texture will be displayed on the screen.
 
 image::media/create_game_04.png[]
+
+== Add your first libgdx-addons
+
+It's important to have a quick feedback loop while developing a game.
+For example, what's the point of restarting your game when you just updated
+a texture from your game?
+
+To enable this feature, you need to add a dependency to
+the https://github.com/dwursteisen/libgdx-addons/tree/master/core-addons[libgdx core-addons].
+
+Add this into your `build.gradle.kts` then refresh the project in your IDE:
+
+.build.gradle.kts
+[source,kotlin,subs=attributes+]
+----
+project(":core") {
+    dependencies {
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:{gitCommit}")
+    }
+}
+----
+
+You can now update your game to use the asset manager of libgdx with `RefreshableTexture`.
+
+.MyGame.kt
+[source,kotlin]
+----
+class MyGame : Game() {
+
+    private val assetManager: AssetManager = AssetManager()
+
+    private lateinit var batch: SpriteBatch
+
+    override fun create() {
+        // <1>
+        assetManager.setLoader(Texture::class.java, RefreshableTextureLoader(InternalFileHandleResolver()))
+        assetManager.load(Assets.assets_dungeon_sheet_png, Texture::class.java)
+        // <2>
+        assetManager.finishLoading()
+        batch = SpriteBatch()
+    }
+
+    override fun render() {
+        // <3>
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+        // <4>
+        val texture: Texture = assetManager[Assets.assets_dungeon_sheet_png]
+        batch.begin()
+        batch.draw(texture, 0f, 0f)
+        batch.end()
+    }
+}
+----
+<1> Replace the default Texture Loader with the RefreshableTexture Loader;
+<2> Force to load all assets before rendering the game;
+<3> Clear the screen;
+<4> Getting the texture from the asset manager.
+
+Run your game and while the game is running, apply a modification on the texture file.
+As soon as you save the file, the texture will be updated in your game.
+
+image::media/create_game_05.gif[]
+
+NOTE: The asset manager is not mandatory. But by using it, you can use the `RefreshableTexture`
+for the desktop version of your game and the default texture loader for your android game without
+having to change your whole code base.

@@ -2,7 +2,6 @@
 
 :doctype: book
 :toc:
-:icons:
 :data-uri:
 :lang: en
 :source-highlighter: coderay
