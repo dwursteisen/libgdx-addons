@@ -21,3 +21,7 @@ a merge request of your update. **Thanks!**
 
 include::01_create_project.adoc[]
 
+include::02_ligdx_addons.adoc[]
+
+include::03_libgdx_gradle.adoc[]
+

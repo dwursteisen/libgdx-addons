@@ -1,10 +1,10 @@
-== Create your first game using Libgdx-addons
+== Getting started
 
 LibGDX use https://gradle.org[gradle] as a build system.
 LibGDX-addons propose a gradle plugin to take care of all gradle setup,
 for all platform (Currently supported: Desktop and Android) so you don't have to manage it.
 
-=== Create your project using libgdx-gradle-plugin
+=== Setup your game
 
 Create your first game by using https://www.jetbrains.com/idea/[IntelliJ].
 Click in `File` > `New Project`
@@ -44,15 +44,19 @@ apply(plugin = "libgdx")
 Run the command `gradlew build`: it will download gradle if needed and download all dependencies and create the minimal setup.
 Once done, it might be long depending of your Internet connection, refresh the project in IntelliJ.
 
-The project is now ready. You can run it by using the
-https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configurations.html[Run Configuration] added in IntelliJ
+=== Run your game
+
+Your game project is now ready!
+A new https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configurations.html[Run Configuration] just appear in your IntelliJ.
+Click on `Add Configuration` and check `Application` run configurations. You will see a run configuration added in IntelliJ
+to run your game.
 
 image::media/create_game_03.png[]
 
 NOTE: The first run will crash! Because you need to create your first game class.
 See bellow for more information.
 
-== Create your Game class
+=== Draw your first texture
 
 Grab an image and copy it into the `assets` directory of the `core` module.
 You can find free image / sprite sheet on the https://opengameart.org/content/a-blocky-dungeon[OpenGameArt.org].
@@ -100,7 +104,7 @@ If you run your game, the texture will be displayed on the screen.
 
 image::media/create_game_04.png[]
 
-== Add your first libgdx-addons
+=== Increase your feedback loop
 
 It's important to have a quick feedback loop while developing a game.
 For example, what's the point of restarting your game when you just updated
@@ -167,3 +171,23 @@ image::media/create_game_05.gif[]
 NOTE: The asset manager is not mandatory. But by using it, you can use the `RefreshableTexture`
 for the desktop version of your game and the default texture loader for your android game without
 having to change your whole code base.
+
+=== Setup a entity engine
+
+TIP: WIP
+
+=== React to events
+
+TIP: WIP
+
+=== Create a state machine
+
+TIP: WIP
+
+=== Package your game for Desktop
+
+TIP: WIP
+
+=== Package your game for Android
+
+TIP: WIP
