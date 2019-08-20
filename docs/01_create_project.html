@@ -475,7 +475,7 @@ It adds necessary repositories for dependencies and add the <a href="https://git
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">buildscript {
     dependencies {
-        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:ccbce4d")
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:e685e21")
     }
 
     repositories {
@@ -579,10 +579,15 @@ it&#8217;s practical to have a compilation error instead of your game crashing.
 <div class="listingblock">
 <div class="title">MainClass.kt</div>
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">LwjglApplication(MyGame(), LwjglApplicationConfiguration().apply {
-                width = 600
-                height = 600
-})</code></pre>
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">object MainClass {
+    @JvmStatic
+    fun main(args: Array&lt;String&gt;) {
+        LwjglApplication(MyGame(), LwjglApplicationConfiguration().apply {
+            width = 600
+            height = 600
+        })
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -613,7 +618,7 @@ the <a href="https://github.com/dwursteisen/libgdx-addons/tree/master/core-addon
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
     dependencies {
-        implementation("com.github.dwursteisen.libgdx-addons:core-addons:ccbce4d")
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:e685e21")
     }
 }</code></pre>
 </div>
@@ -774,7 +779,7 @@ WIP
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Last updated 2019-08-20 22:57:38 +0200
+Last updated 2019-08-20 23:19:38 +0200
 </div>
 </div>
 </body>

@@ -76,32 +76,13 @@ Create your game into the `core` directory and use it in `MainClass.kt`.
 .MyGame.kt
 [source,kotlin]
 ----
-class MyGame : Game() {
-
-    private lateinit var texture: Texture
-
-    private lateinit var batch: SpriteBatch
-
-    override fun create() {
-        texture = Texture(Assets.assets_dungeon_sheet_png)
-        batch = SpriteBatch()
-    }
-
-    override fun render() {
-        batch.begin()
-        batch.draw(texture, 0f, 0f)
-        batch.end()
-    }
-}
+include::samples/step2/core/src/main/kotlin/libgdx/MyGame.kt[tags="body"]
 ----
 
 .MainClass.kt
 [source,kotlin]
 ----
-LwjglApplication(MyGame(), LwjglApplicationConfiguration().apply {
-                width = 600
-                height = 600
-})
+include::samples/step2/desktop/src/main/kotlin/libgdx/MainClass.kt[tags="body"]
 ----
 
 If you run your game, the texture will be displayed on the screen.
@@ -134,33 +115,7 @@ You can now update your game to use the asset manager of libgdx with `Refreshabl
 .MyGame.kt
 [source,kotlin]
 ----
-class MyGame : Game() {
-
-    private val assetManager: AssetManager = AssetManager()
-
-    private lateinit var batch: SpriteBatch
-
-    override fun create() {
-        // <1>
-        assetManager.setLoader(Texture::class.java, RefreshableTextureLoader(InternalFileHandleResolver()))
-        assetManager.load(Assets.assets_dungeon_sheet_png, Texture::class.java)
-        // <2>
-        assetManager.finishLoading()
-        batch = SpriteBatch()
-    }
-
-    override fun render() {
-        // <3>
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-        // <4>
-        val texture: Texture = assetManager[Assets.assets_dungeon_sheet_png]
-        batch.begin()
-        batch.draw(texture, 0f, 0f)
-        batch.end()
-    }
-}
+include::samples/step3/core/src/main/kotlin/libgdx/MyGame.kt[tags="body"]
 ----
 <1> Replace the default Texture Loader with the RefreshableTexture Loader;
 <2> Force to load all assets before rendering the game;
