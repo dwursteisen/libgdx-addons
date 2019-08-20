@@ -15,5 +15,10 @@ It's like Java but shorter.
 LibGDX is an addons to ease the development of games using libGDX and Kotlin.
 Get ride of all boilerplate to dive directly into the code of your game.
 
+IMPORTANT: This documentation is open source.
+You can correct it, updated it or add content of you want to.
+Just https://github.com/dwursteisen/libgdx-addons/fork[Fork it] and submit
+a merge request of your update. **Thanks!**
+
 include::01_create_project.adoc[]
 
