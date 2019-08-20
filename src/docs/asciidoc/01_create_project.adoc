@@ -1,9 +1,10 @@
-== Create your first game
+== Create your first game using Libgdx-addons
 
 LibGDX use https://gradle.org[gradle] as a build system.
-LibGDX-addons propose a gradle plugin to take care of all gradle setup, for all platform so you don't have to manage it.
+LibGDX-addons propose a gradle plugin to take care of all gradle setup,
+for all platform (Currently supported: Desktop and Android) so you don't have to manage it.
 
-=== Create a simple gradle project
+=== Create your project using libgdx-gradle-plugin
 
 Create your first game by using https://www.jetbrains.com/idea/[IntelliJ].
 Click in `File` > `New Project`
@@ -49,7 +50,7 @@ https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configuration
 image::media/create_game_03.png[]
 
 NOTE: The first run will crash! Because you need to create your first game class.
-See above for more information.
+See bellow for more information.
 
 == Create your Game class
 

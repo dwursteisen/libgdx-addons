@@ -1,7 +1,6 @@
 = LibGDX Addons
-
 :doctype: book
-:toc:
+:toc: left
 :data-uri:
 :lang: en
 :source-highlighter: coderay
@@ -12,7 +11,7 @@ Using it, you can create a game for mobile, desktop and web platform.
 https://kotlinlang.org/[Kotlin] is a language compatible with the JVM (Java Virtual Machine) platform.
 It's like Java but shorter.
 
-LibGDX is an addons to ease the development of games using libGDX and Kotlin.
+LibGDX-addons is a set of addons, gradle plugins, …, to ease the development of games using libGDX and Kotlin.
 Get ride of all boilerplate to dive directly into the code of your game.
 
 IMPORTANT: This documentation is open source.

@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Create your first game</title>
+<title>Create your first game using Libgdx-addons</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -435,14 +435,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_create_your_first_game">Create your first game</h2>
+<h2 id="_create_your_first_game_using_libgdx_addons">Create your first game using Libgdx-addons</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>LibGDX use <a href="https://gradle.org">gradle</a> as a build system.
-LibGDX-addons propose a gradle plugin to take care of all gradle setup, for all platform so you don&#8217;t have to manage it.</p>
+LibGDX-addons propose a gradle plugin to take care of all gradle setup,
+for all platform (Currently supported: Desktop and Android) so you don&#8217;t have to manage it.</p>
 </div>
 <div class="sect2">
-<h3 id="_create_a_simple_gradle_project">Create a simple gradle project</h3>
+<h3 id="_create_your_project_using_libgdx_gradle_plugin">Create your project using libgdx-gradle-plugin</h3>
 <div class="paragraph">
 <p>Create your first game by using <a href="https://www.jetbrains.com/idea/">IntelliJ</a>.
 Click in <code>File</code> &gt; <code>New Project</code></p>
@@ -472,7 +473,7 @@ It adds necessary repositories for dependencies and add the <a href="https://git
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">buildscript {
     dependencies {
-        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:6596d40
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:b190c3a
 ")
     }
 
@@ -509,7 +510,7 @@ Once done, it might be long depending of your Internet connection, refresh the p
 </td>
 <td class="content">
 The first run will crash! Because you need to create your first game class.
-See above for more information.
+See bellow for more information.
 </td>
 </tr>
 </table>
@@ -605,7 +606,7 @@ the <a href="https://github.com/dwursteisen/libgdx-addons/tree/master/core-addon
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
     dependencies {
-        implementation("com.github.dwursteisen.libgdx-addons:core-addons:6596d40
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:b190c3a
 ")
     }
 }</code></pre>
@@ -691,7 +692,7 @@ having to change your whole code base.
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Last updated 2019-08-20 11:57:26 +0200
+Last updated 2019-08-20 13:05:41 +0200
 </div>
 </div>
 </body>
