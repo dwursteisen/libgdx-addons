@@ -49,6 +49,7 @@ class AssetsPluginTest {
     @Test
     fun `it should create a Assets object in another directory`() {
         buildFile.writeText("""
+// tag::configuration[]
 import com.github.dwursteisen.libgdx.assets.AssetsPlugin
 import com.github.dwursteisen.libgdx.assets.AssetsPluginExtension
             
@@ -60,6 +61,7 @@ apply<AssetsPlugin>()
 configure<AssetsPluginExtension> {
     assetsClass.set(project.buildDir.resolve("generated/NewAssets.kt"))
 }
+// end::configuration[]
         """.trimIndent())
 
         val asset = File(temporaryFolder.newFolder("src", "main", "assets"), "example.txt")

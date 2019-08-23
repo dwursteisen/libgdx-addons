@@ -449,13 +449,95 @@ WIP
 </tr>
 </table>
 </div>
+<div class="sect2">
+<h3 id="_assets_gradle_plugin">Assets Gradle Plugin</h3>
+<div class="paragraph">
+<p>When developing a game, you need to manage resources. Time to time
+you need to rename a file. In such case, you need to track every time you
+reference the file name by a string.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">val sprite = load("mySprite.png")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To avoid to search for every place you&#8217;re loading the file using a <code>String</code>,
+the assets plugin can generate an <code>Assets</code> object that will hold all references to
+all your assets.</p>
+</div>
+<div class="listingblock">
+<div class="title">Assets.kt</div>
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">object Assets {
+    val mySprite: String = "mySprite.png"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you rename an asset, then the class will be re-generated and you game will not
+compile! Which is way better than compile and crash later.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+It&#8217;s better to have a game that doesn&#8217;t compile than a game that compile,
+run and crash only when the game will load the missing asset.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_configuration">Configuration</h4>
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import com.github.dwursteisen.libgdx.assets.AssetsPlugin
+import com.github.dwursteisen.libgdx.assets.AssetsPluginExtension
+
+plugins {
+    id("assets")
+}
+apply&lt;AssetsPlugin&gt;()
+
+configure&lt;AssetsPluginExtension&gt; {
+    assetsClass.set(project.buildDir.resolve("generated/NewAssets.kt"))
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can configure the plugin using several options:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">open class AssetsPluginExtension(project: Project) {
+    /**
+     * Which directory should be scan so all files will be referenced in the Assets object.
+     */
+    val assetsDirectory = project.createProperty&lt;FileCollection&gt;()
+        .value(project.files("src/main/assets"))
+
+    /**
+     * Which class (aka Assets object) will reference all assets name.
+     */
+    val assetsClass = project.createProperty&lt;File&gt;()
+        .value(project.buildDir.resolve("generated/Assets.kt"))
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Last updated 2019-08-20 22:17:29 +0200
+Last updated 2019-08-23 16:09:05 +0200
 </div>
 </div>
 </body>

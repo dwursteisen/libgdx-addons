@@ -1,3 +1,47 @@
 == LibGDX Gradle plugins
 
 TIP: WIP
+
+===  Assets Gradle Plugin
+
+When developing a game, you need to manage resources. Time to time
+you need to rename a file. In such case, you need to track every time you
+reference the file name by a string.
+
+[source,kotlin]
+----
+val sprite = load("mySprite.png")
+----
+
+To avoid to search for every place you're loading the file using a `String`,
+the assets plugin can generate an `Assets` object that will hold all references to
+all your assets.
+
+.Assets.kt
+[source,kotlin]
+----
+object Assets {
+    val mySprite: String = "mySprite.png"
+}
+----
+
+If you rename an asset, then the class will be re-generated and you game will not
+compile! Which is way better than compile and crash later.
+
+TIP: It's better to have a game that doesn't compile than a game that compile,
+run and crash only when the game will load the missing asset.
+
+==== Configuration
+
+.build.gradle.kts
+[source,kotlin]
+----
+include::../../../assets-gradle-plugin/src/test/kotlin/com/github/dwursteisen/libgdx/assets/AssetsPluginTest.kt[tags="configuration"]
+----
+
+You can configure the plugin using several options:
+
+[source,kotlin]
+----
+include::../../../assets-gradle-plugin/src/main/kotlin/com/github/dwursteisen/libgdx/assets/AssetsPluginExtension.kt[lines=7..]
+----

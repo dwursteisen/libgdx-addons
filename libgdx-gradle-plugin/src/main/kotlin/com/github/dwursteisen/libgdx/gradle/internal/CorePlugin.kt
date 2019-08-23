@@ -1,13 +1,11 @@
 package com.github.dwursteisen.libgdx.gradle.internal
 
-import com.github.dwursteisen.libgdx.assets.AssetsPluginExtension
 import com.github.dwursteisen.libgdx.assets.AssetsTask
 import com.github.dwursteisen.libgdx.gradle.LibGDXExtensions
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
-import java.io.File
 
 class CorePlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
     override fun apply(project: Project) {
@@ -27,34 +25,25 @@ class CorePlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
     }
 
     private fun setupKotlin(project: Project) {
-        project.afterEvaluate {
-            project.tasks.withType(KotlinCompile::class.java).forEach {
-                it.kotlinOptions {
-                    this as KotlinJvmOptions
-                    // force the compilation at 1.8 as it may target Android platform
-                    this.jvmTarget = "1.8"
-                    this.freeCompilerArgs = listOf("-Xjsr305=strict")
-                }
+        project.tasks.withType(KotlinCompile::class.java).forEach {
+            it.kotlinOptions {
+                this as KotlinJvmOptions
+                // force the compilation at 1.8 as it may target Android platform
+                this.jvmTarget = "1.8"
+                this.freeCompilerArgs = listOf("-Xjsr305=strict")
             }
         }
     }
 
     private fun addAssetsTask(project: Project) {
         project.apply { it.plugin("assets") }
+        project.tasks.withType(AssetsTask::class.java) { task ->
+            exts.assetsDirectory?.let { task.assetsDirectory.set(project.files(it)) }
 
-        project.extensions.configure(AssetsPluginExtension::class.java) {
-            it.assetsDirectory = exts.assetsDirectory?.let { f -> project.files(f) }
-            it.assetsClass = File(project.buildDir, "generated/Assets.kt")
-        }
-
-        project.afterEvaluate {
-            val assets = it.tasks.withType(AssetsTask::class.java)
-            val compileKotlinTask = it.tasks.withType(KotlinCompile::class.java)
+            val compileKotlinTask = project.tasks.withType(KotlinCompile::class.java)
             compileKotlinTask.forEach { compiler ->
-                compiler.dependsOn(assets)
+                compiler.dependsOn(task)
             }
-
         }
     }
-
 }
