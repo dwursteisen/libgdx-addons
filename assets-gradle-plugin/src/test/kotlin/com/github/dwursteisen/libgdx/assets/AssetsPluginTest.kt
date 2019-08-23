@@ -45,4 +45,35 @@ class AssetsPluginTest {
         assert(generated.readText().contains("example.txt"))
         assert(generated.readText().contains("folder/in_folder.txt"))
     }
+
+    @Test
+    fun `it should create a Assets object in another directory`() {
+        buildFile.writeText("""
+import com.github.dwursteisen.libgdx.assets.AssetsPlugin
+import com.github.dwursteisen.libgdx.assets.AssetsPluginExtension
+            
+plugins {
+    id("assets")
+}
+apply<AssetsPlugin>()
+
+configure<AssetsPluginExtension> {
+    assetsClass.set(project.buildDir.resolve("generated/NewAssets.kt"))
+}
+        """.trimIndent())
+
+        val asset = File(temporaryFolder.newFolder("src", "main", "assets"), "example.txt")
+        asset.writeText("hello world")
+
+        val result = GradleRunner.create()
+            .withProjectDir(temporaryFolder.root)
+            .withArguments("assets")
+            .withPluginClasspath()
+            .build()
+
+        assert(result.task(":assets")?.outcome == TaskOutcome.SUCCESS)
+        val generated = File(temporaryFolder.root, "build/generated/NewAssets.kt")
+        assert(generated.isFile)
+        assert(generated.readText().contains("example.txt"))
+    }
 }

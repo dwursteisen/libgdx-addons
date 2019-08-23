@@ -4,7 +4,6 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
@@ -19,29 +18,28 @@ open class AssetsTask : DefaultTask() {
     }
 
     @InputFiles
-    var files: FileCollection? = null
+    val assetsDirectory = project.createProperty<FileCollection>()
 
     @OutputFile
-    var output: File? = null
+    val assetsClass = project.createProperty<File>()
 
     @TaskAction
     fun generate() {
-        val securedOutput = output ?: expected(AssetsTask::output::name.get())
-        val file = FileSpec.builder("", securedOutput.nameWithoutExtension)
-        val builder = TypeSpec.objectBuilder(securedOutput.nameWithoutExtension)
+        val file = FileSpec.builder("", assetsClass.get().nameWithoutExtension)
+        val builder = TypeSpec.objectBuilder(assetsClass.get().nameWithoutExtension)
 
-        files?.files?.forEach {
+        assetsDirectory.get().files.forEach {
             val base = if (it.isDirectory) it else it.parentFile
             appendDirectory(it, base, builder)
         }
 
         file.addType(builder.build())
-        file.build().writeTo(securedOutput.parentFile ?: expected("Output file name"))
+        file.build().writeTo(assetsClass.get().parentFile)
     }
 
     private fun appendDirectory(current: File, base: File, builder: TypeSpec.Builder, prefix: String = "") {
         if (current.isDirectory) {
-            current.listFiles().forEach {
+            current.listFiles()?.forEach {
                 appendDirectory(it, base, builder, prefix + current.nameWithoutExtension + "_")
             }
         } else {
@@ -51,8 +49,5 @@ open class AssetsTask : DefaultTask() {
                     .build()
             )
         }
-
     }
-
-    private fun expected(message: String): Nothing = throw GradleException(message)
 }

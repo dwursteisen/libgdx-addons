@@ -2,26 +2,23 @@ package com.github.dwursteisen.libgdx.assets
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.SourceSetContainer
-import java.io.File
+import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.tasks.SourceSet
 
 class AssetsPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        project.apply { it.plugin("org.gradle.java") }
+        val exts = project.extensions.create("assets", AssetsPluginExtension::class.java, project)
 
-        val exts = project.extensions.create("assets", AssetsPluginExtension::class.java)
-        project.afterEvaluate {
-            it.tasks.create("assets", AssetsTask::class.java) { task ->
-                task.files = exts.assetsDirectory ?: project.files(File(project.projectDir, "src/main/assets"))
-                task.output = exts.assetsClass ?: File(project.buildDir, "generated/Assets.kt")
-            }
+        project.tasks.register("assets", AssetsTask::class.java) { task ->
+            task.assetsDirectory.set(exts.assetsDirectory)
+            task.assetsClass.set(exts.assetsClass)
         }
 
-        val sourceSets = project.extensions.getByName("sourceSets") as SourceSetContainer
-        sourceSets.getByName("main") {
-            it.java.srcDir(File(project.buildDir, "generated"))
+        project.plugins.withType(JavaPlugin::class.java) {
+            val javaConvention = project.convention.getPlugin(JavaPluginConvention::class.java)
+            val main = javaConvention.sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+            main.java.srcDir(project.buildDir.resolve("generated"))
         }
-
     }
-
 }
