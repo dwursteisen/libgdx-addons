@@ -6,7 +6,6 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import java.io.File
 
 open class PackrTask : DefaultTask() {
@@ -16,49 +15,46 @@ open class PackrTask : DefaultTask() {
         description = "Package your application with a bundled JRE"
     }
 
-    var platform: PackrConfig.Platform? = null
-    var jdk: String? = null
-    var executable: String? = null
+    val platform = project.createProperty<PackrConfig.Platform>()
+    val jdk = project.createProperty<String>()
+    val executable = project.createProperty<String>()
 
-    var mainClass: String? = null
-    var vmArgs: Array<String>? = null
-    var minimizeJre: String? = null
+    val mainClass = project.createProperty<String>()
+    val vmArgs = project.createProperty<List<String>>()
+    val minimizeJre = project.createProperty<String>()
 
     @InputFile
-    var classpath: File? = null
+    val classpath = project.createProperty<File>()
 
     @OutputDirectory
-    var outputDir: File? = null
+    val outputDir = project.createProperty<File>()
 
-    var bundleIdentifier: String? = null
+    val bundleIdentifier = project.createProperty<String>()
 
-    var verbose = false
+    val verbose = project.createProperty<Boolean>()
 
     @TaskAction
-    fun packageIt(inputs: IncrementalTaskInputs) {
-
+    fun packageIt() {
         val config = PackrConfig()
-        config.platform = this.platform ?: findCurrentSystem()
-        config.jdk = this.jdk ?: currentJavaHome()
-        config.executable = this.executable ?: project.name
-        config.classpath = this.classpath?.let { listOf(it.absolutePath) } ?: invalidClasspath()
+        config.platform = this.platform.orNull ?: findCurrentSystem()
+        config.jdk = this.jdk.orNull ?: currentJavaHome()
+        config.executable = this.executable.orNull ?: project.name
+        config.classpath = this.classpath.map { listOf(it.absolutePath) }.orNull ?: invalidClasspath()
 
-        config.mainClass = this.mainClass
+        config.mainClass = this.mainClass.get()
 
-        config.vmArgs = (this.vmArgs ?: emptyArray()).toList()
+        config.vmArgs = this.vmArgs.getOrElse(emptyList())
 
-        config.minimizeJre = this.minimizeJre
+        config.minimizeJre = this.minimizeJre.get()
 
         config.bundleIdentifier = if (config.platform == PackrConfig.Platform.MacOS) {
-            this.bundleIdentifier ?: invalidBundle()
+            this.bundleIdentifier.orNull ?: invalidBundle()
         } else {
-            this.bundleIdentifier
+            this.bundleIdentifier.orNull
         }
-        config.verbose = this.verbose
+        config.verbose = this.verbose.getOrElse(false)
 
-        val outputDirPath = this.outputDir ?: "build/packr-out"
-
-        config.outDir = project.file(outputDirPath)
+        config.outDir = this.outputDir.getOrElse(project.buildDir.resolve("packr-out"))
 
         Packr().pack(config)
     }

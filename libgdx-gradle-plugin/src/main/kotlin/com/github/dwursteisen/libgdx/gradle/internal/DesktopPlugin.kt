@@ -3,8 +3,9 @@ package com.github.dwursteisen.libgdx.gradle.internal
 import com.github.dwursteisen.libgdx.gradle.LibGDXExtensions
 import com.github.dwursteisen.libgdx.gradle.internal.tasks.GenerateClassReference
 import com.github.dwursteisen.libgdx.gradle.internal.tasks.GenerateCodeTask
-import com.github.dwursteisen.libgdx.packr.PackrTask
+import com.github.dwursteisen.libgdx.packr.PackrPluginExtension
 import de.undercouch.gradle.tasks.download.Download
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.JavaExec
@@ -114,24 +115,57 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
                 dl.src(exts.openJdk.macOSX)
             }
         }
-    }
 
-    private fun addPackr(project: Project) {
-        // TODO: Create extensions and apply the Packr plugin instead.
-        val task = project.tasks.create("packr-macosx", PackrTask::class.java) {
-            it.group = "packr"
-            it.classpath = project.tasks.getByPath("dist").outputs.files.singleFile
-            it.outputDir = project.file("build/parkr/${project.rootProject.name}.app")
-
-            it.doFirst {
-                it as PackrTask
-                it.jdk = project.file("build/open-jdk/open-jdk-mac.zip").absolutePath
-                it.bundleIdentifier = project.rootProject.name
-                it.mainClass = exts.mainClass
+        project.tasks.create("open-jdk-windows", Download::class.java) { dl ->
+            dl.group = "packr"
+            dl.dest(project.file("build/open-jdk/open-jdk-windows.zip"))
+            dl.overwrite(false)
+            dl.doFirst {
+                dl.src(exts.openJdk.windows)
             }
         }
 
-        task.dependsOn("dist", "open-jdk-mac")
+        project.tasks.create("open-jdk-linux", Download::class.java) { dl ->
+            dl.group = "packr"
+            dl.dest(project.file("build/open-jdk/open-jdk-linux.zip"))
+            dl.overwrite(false)
+            dl.doFirst {
+                dl.src(exts.openJdk.linux)
+            }
+        }
+    }
+
+    private fun addPackr(project: Project) {
+        project.apply { it.plugin("com.github.dwursteisen.libgdx.packr.PackrPlugin") }
+        project.extensions.configure<NamedDomainObjectContainer<PackrPluginExtension>>("packr") { container ->
+            container.create("macosx") {
+                it.outputDir.set(project.buildDir.resolve("packr/macosx/${project.rootProject.name}.app"))
+                it.bundleIdentifier.set(project.rootProject.name)
+                it.jdk.set(project.buildDir.resolve("open-jdk/open-jdk-mac.zip").absolutePath)
+                it.mainClass.set(exts.mainClass)
+                it.classpath.set(project.tasks.getByPath("dist").outputs.files.singleFile)
+            }
+
+            container.create("windows") {
+                it.outputDir.set(project.buildDir.resolve("packr/windows"))
+                it.jdk.set(project.buildDir.resolve("open-jdk/open-jdk-windows.zip").absolutePath)
+                it.mainClass.set(exts.mainClass)
+                it.classpath.set(project.tasks.getByPath("dist").outputs.files.singleFile)
+            }
+
+            container.create("linux") {
+                it.outputDir.set(project.buildDir.resolve("packr/linux"))
+                it.jdk.set(project.buildDir.resolve("open-jdk/open-jdk-linux.zip").absolutePath)
+                it.mainClass.set(exts.mainClass)
+                it.classpath.set(project.tasks.getByPath("dist").outputs.files.singleFile)
+            }
+        }
+
+        project.afterEvaluate {
+            it.tasks.getByName("macosxPackr").dependsOn("dist", "open-jdk-mac")
+            it.tasks.getByName("windowsPackr").dependsOn("dist", "open-jdk-windows")
+            it.tasks.getByName("linuxPackr").dependsOn("dist", "open-jdk-linux")
+        }
     }
 
     private fun addRunTask(project: Project, sourceSets: SourceSetContainer) {

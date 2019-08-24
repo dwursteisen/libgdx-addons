@@ -3,35 +3,28 @@ package com.github.dwursteisen.libgdx.packr
 import com.badlogicgames.packr.PackrConfig
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.internal.CollectionCallbackActionDecorator
-import org.gradle.internal.reflect.Instantiator
-import javax.inject.Inject
 
-class PackrPlugin @Inject constructor(
-    private val instantiator: Instantiator,
-    private val callbackDecorator: CollectionCallbackActionDecorator) : Plugin<Project> {
+class PackrPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        val exts = project.extensions.create(
-            "packr",
-            PackrPluginExtensionContainer::class.java,
-            PackrPluginExtension::class.java,
-            instantiator,
-            callbackDecorator
-        )
+        val container = project.container(PackrPluginExtension::class.java) { name -> PackrPluginExtension(name, project) }
 
-        exts.all { ext ->
-            project.tasks.register(ext.name + "Packr", PackrTask::class.java) {
-                it.platform = ext.platform
-                it.jdk = ext.jdk
-                it.executable = ext.executable
-                it.mainClass = ext.mainClass
-                it.vmArgs = ((ext.vmArgs ?: emptyList()) + macArgs()).toSet().toTypedArray()
-                it.minimizeJre = ext.minimizeJre
-                it.classpath = ext.classpath
-                it.outputDir = ext.outputDir
-                it.bundleIdentifier = ext.bundleIdentifier ?: tryDefaultBundleName(project, ext.platform)
-                it.verbose = ext.verbose
+        project.extensions.add("packr", container)
+
+        container.all { ext ->
+            val taskName = ext.name + "Packr"
+            project.tasks.register(taskName, PackrTask::class.java) {
+                it.platform.set(ext.platform.orNull)
+                it.jdk.set(ext.jdk.orNull)
+                it.executable.set(ext.executable.orNull)
+                it.mainClass.set(ext.mainClass.orNull)
+                it.vmArgs.set(ext.vmArgs.getOrElse(emptyList()) + macArgs())
+                it.minimizeJre.set(ext.minimizeJre.orNull)
+                it.classpath.set(ext.classpath.orNull)
+                it.outputDir.set(ext.outputDir.orNull)
+                it.bundleIdentifier.set(ext.bundleIdentifier.orNull
+                    ?: tryDefaultBundleName(project, ext.platform.orNull))
+                it.verbose.set(ext.verbose.getOrElse(false))
             }
         }
     }

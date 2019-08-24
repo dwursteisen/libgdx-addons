@@ -1,41 +1,27 @@
 package com.github.dwursteisen.libgdx.packr
 
 import com.badlogicgames.packr.PackrConfig
-import org.gradle.api.Named
-import org.gradle.api.internal.AbstractNamedDomainObjectContainer
-import org.gradle.api.internal.CollectionCallbackActionDecorator
-import org.gradle.internal.reflect.Instantiator
+import org.gradle.api.Project
 import java.io.File
 
-open class PackrPluginExtensionContainer(
-    type: Class<PackrPluginExtension>,
-    instantiator: Instantiator,
-    callbackDecorator: CollectionCallbackActionDecorator
-) : AbstractNamedDomainObjectContainer<PackrPluginExtension>(
-    type, instantiator, callbackDecorator
-) {
+open class PackrPluginExtension(val name: String, project: Project) {
 
-    override fun doCreate(name: String): PackrPluginExtension {
-        return instantiator.newInstance<PackrPluginExtension>(PackrPluginExtension::class.java, name)
-    }
-}
+    val platform = project.createProperty<PackrConfig.Platform>()
 
-open class PackrPluginExtension(private val name: String) : Named {
-    override fun getName(): String = name
+    val jdk = project.createProperty<String>()
+    val executable = project.createProperty<String?>()
 
-    var platform: PackrConfig.Platform? = null
-    var jdk: String? = null
-    var executable: String? = null
+    val mainClass = project.createProperty<String>()
+    val vmArgs = project.createProperty<List<String>>()
+    val minimizeJre = project.createProperty<String>()
+        .value("soft")
 
-    var mainClass: String? = null
-    var vmArgs: List<String>? = null
-    var minimizeJre: String? = null
+    val classpath = project.createProperty<File>()
 
-    var classpath: File? = null
+    val outputDir = project.createProperty<File>()
 
-    var outputDir: File? = null
+    val bundleIdentifier = project.createProperty<String?>()
 
-    var bundleIdentifier: String? = null
-
-    var verbose: Boolean = false
+    val verbose = project.createProperty<Boolean>()
+        .value(false)
 }
