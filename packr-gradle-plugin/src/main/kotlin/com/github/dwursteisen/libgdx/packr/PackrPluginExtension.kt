@@ -1,6 +1,7 @@
 package com.github.dwursteisen.libgdx.packr
 
 import com.badlogicgames.packr.PackrConfig
+import com.github.dwursteisen.libgdx.gradle.createProperty
 import org.gradle.api.Project
 import java.io.File
 

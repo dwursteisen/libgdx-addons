@@ -1,5 +1,6 @@
 package com.github.dwursteisen.libgdx.assets
 
+import com.github.dwursteisen.libgdx.gradle.createProperty
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec

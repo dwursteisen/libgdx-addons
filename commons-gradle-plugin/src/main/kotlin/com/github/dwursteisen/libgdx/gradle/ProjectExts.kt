@@ -1,4 +1,4 @@
-package com.github.dwursteisen.libgdx.assets
+package com.github.dwursteisen.libgdx.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.provider.Property

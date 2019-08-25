@@ -1,6 +1,5 @@
 dependencies {
-    implementation(project(":commons-gradle-plugin"))
+    compileOnly(gradleApi())
     implementation(kotlin("stdlib"))
-    implementation(gradleApi())
     testImplementation(TestDependencies.junit)
 }

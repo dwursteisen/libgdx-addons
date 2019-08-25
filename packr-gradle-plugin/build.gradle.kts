@@ -8,6 +8,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":commons-gradle-plugin"))
     implementation(kotlin("stdlib"))
     implementation(gradleApi())
     implementation("com.github.dwursteisen:packr:4680924076")

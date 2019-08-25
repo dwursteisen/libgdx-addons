@@ -1,5 +1,6 @@
 package com.github.dwursteisen.libgdx.assets
 
+import com.github.dwursteisen.libgdx.gradle.createProperty
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import java.io.File

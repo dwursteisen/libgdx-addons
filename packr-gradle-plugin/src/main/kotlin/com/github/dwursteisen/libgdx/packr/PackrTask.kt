@@ -2,6 +2,7 @@ package com.github.dwursteisen.libgdx.packr
 
 import com.badlogicgames.packr.Packr
 import com.badlogicgames.packr.PackrConfig
+import com.github.dwursteisen.libgdx.gradle.createProperty
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory

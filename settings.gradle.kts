@@ -9,6 +9,7 @@ include("libgdx-test")
 include("admob-addons:admob-core")
 include("admob-addons:admob-desktop")
 
+include("commons-gradle-plugin")
 include("packr-gradle-plugin")
 include("aseprite-gradle-plugin")
 include("libgdx-gradle-plugin")
