@@ -80,7 +80,7 @@ abstract class StateMachineSystem(
             }
         } else {
             val componentState = state.status[clazz] ?: EntityState.STATE_NOP
-            val time = (state.timeReset[clazz] ?: state.time) - state.time
+            val time = state.time - (state.timeReset[clazz] ?: state.time)
             block.invoke(componentState, time)
         }
     }
