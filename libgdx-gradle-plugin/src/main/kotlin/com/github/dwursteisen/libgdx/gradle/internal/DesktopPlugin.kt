@@ -4,7 +4,7 @@ import com.github.dwursteisen.libgdx.gradle.LibGDXExtensions
 import com.github.dwursteisen.libgdx.gradle.internal.tasks.GenerateClassReference
 import com.github.dwursteisen.libgdx.gradle.internal.tasks.GenerateCodeTask
 import com.github.dwursteisen.libgdx.packr.PackrPluginExtension
-import de.undercouch.gradle.tasks.download.Download
+import fi.linuxbox.gradle.download.Download
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -106,32 +106,26 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
     }
 
     private fun addOpenJdkDownloadTask(project: Project) {
-        project.apply { it.plugin("de.undercouch.download") }
+        project.apply { it.plugin("fi.linuxbox.download") }
+
         project.tasks.create("open-jdk-mac", Download::class.java) { dl ->
             dl.group = "packr"
-            dl.dest(project.file("build/open-jdk/open-jdk-mac.zip"))
-            dl.overwrite(false)
-            dl.doFirst {
-                dl.src(exts.openJdk.macOSX)
-            }
+            dl.to(project.file("build/open-jdk/open-jdk-mac.zip"))
+            dl.from(exts.openJdk.macOSX.toString())
         }
 
         project.tasks.create("open-jdk-windows", Download::class.java) { dl ->
             dl.group = "packr"
-            dl.dest(project.file("build/open-jdk/open-jdk-windows.zip"))
-            dl.overwrite(false)
-            dl.doFirst {
-                dl.src(exts.openJdk.windows)
-            }
+            dl.to(project.file("build/open-jdk/open-jdk-windows.zip"))
+            dl.from(exts.openJdk.windows.toString())
+
         }
 
         project.tasks.create("open-jdk-linux", Download::class.java) { dl ->
             dl.group = "packr"
-            dl.dest(project.file("build/open-jdk/open-jdk-linux.zip"))
-            dl.overwrite(false)
-            dl.doFirst {
-                dl.src(exts.openJdk.linux)
-            }
+            dl.to(project.file("build/open-jdk/open-jdk-linux.zip"))
+            dl.from(exts.openJdk.linux.toString())
+
         }
     }
 
