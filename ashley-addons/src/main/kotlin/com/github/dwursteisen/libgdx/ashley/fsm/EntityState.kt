@@ -26,7 +26,9 @@ abstract class EntityState {
      *
      * [entity] the current entity.
      * [time] the time since the entity is in this new state.
+     *
      */
+    // TODO: add delta as third parameter
     open fun update(entity: Entity, time: Float) = Unit
 
     /**

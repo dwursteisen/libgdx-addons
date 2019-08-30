@@ -48,6 +48,7 @@ class AndroidPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
             project.configurations.create("natives")
             project.dependencies.add("implementation", project.dependencies.project(mapOf("path" to ":core")))
             project.dependencies.add("implementation", "com.badlogicgames.gdx:gdx-backend-android:$version")
+            project.dependencies.add("implementation", "org.jetbrains.kotlin:kotlin-stdlib")
             project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-armeabi")
             project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-armeabi-v7a")
             project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-x86")

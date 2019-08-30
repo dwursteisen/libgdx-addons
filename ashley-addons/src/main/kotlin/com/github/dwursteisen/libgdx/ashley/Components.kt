@@ -31,4 +31,15 @@ data class TextureComponent(var texture: TextureRegion) : Component
 data class Position(val value: Vector2 = Vector2()) : Component
 data class Size(val value: Vector2 = Vector2()) : Component
 data class Direction(val value: Vector2 = Vector2()) : Component
-data class Rotation(var degree: Float = 0f, val origin: Vector2 = Vector2()) : Component
+
+/**
+ * Hold rotation of the current entity.
+ * Will be use to render the entity.
+ *
+ * @property degree: rotation of the entity, in degree
+ * @property origin: origin of the rotation.
+ */
+data class Rotation(
+    var degree: Float = 0f,
+    val origin: Vector2 = Vector2()
+) : Component
