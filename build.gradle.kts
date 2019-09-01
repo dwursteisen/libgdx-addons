@@ -17,7 +17,10 @@ tasks {
         dependsOn("asciidoctor-media")
         outputDir(file("docs"))
         separateOutputDirs = false
-        attributes(mapOf("gitCommit" to Git.commit()))
+        attributes(mapOf(
+                "gitCommit" to Git.commit(),
+                "versionAshley" to Version.ashley
+        ))
     }
 }
 

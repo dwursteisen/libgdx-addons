@@ -133,8 +133,27 @@ having to change your whole code base.
 
 === Setup a entity engine
 
-TIP: WIP
+A game is a lot of different entities who share a lot of common behaviours. For example, the player
+and an enemy have bot a position. They have both a size too. You can create a class that both will
+inherit. But it will increase your code complexity. Instead, you can compose your entities of different
+properties: an entity can be a player with a size and a position. An enemy is an entity with a size, a position,
+some other capacities.
 
+[Ashley](https://github.com/libgdx/ashley) is one entity engine for libGDX. It is very easy to setup in your project.
+Add ashley as dependencies of your project then refresh it in your IDE.
+
+.build.gradle.kts
+[source,kotlin,subs=attributes+]
+----
+project(":core") {
+    dependencies {
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:{gitCommit}")
+        implementation("com.badlogicgames.ashley:ashley:{versionAshley}")
+    }
+}
+----
+
+In your
 === React to events
 
 TIP: WIP
