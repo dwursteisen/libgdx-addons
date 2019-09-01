@@ -28,12 +28,25 @@ It adds necessary repositories for dependencies and add the https://github.com/d
 
 buildscript {
     dependencies {
-        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:{gitCommit}")
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:016e8b7")
     }
-
+    // <1>
     repositories {
         mavenCentral()
         google()
+        jcenter()
+        maven { url = uri("https://oss.sonatype.org/content/repositories/releases/") }
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+
+allprojects {
+    // <2>
+    repositories {
+        mavenCentral()
+        google()
+        jcenter()
         maven { url = uri("https://oss.sonatype.org/content/repositories/releases/") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
         maven { url = uri("https://jitpack.io") }
@@ -42,6 +55,8 @@ buildscript {
 
 apply(plugin = "libgdx")
 ----
+<1> Add dependency repositories for plugins
+<2> Add dependency repositories for all modules
 
 Run the command `gradlew build`: it will download gradle if needed and download all dependencies and create the minimal setup.
 Once done, it might be long depending of your Internet connection, refresh the project in IntelliJ.
@@ -153,7 +168,6 @@ project(":core") {
 }
 ----
 
-In your
 === React to events
 
 TIP: WIP
