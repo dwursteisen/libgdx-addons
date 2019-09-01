@@ -26,6 +26,25 @@ open class StateComponent() : Component, Pool.Poolable {
     }
 }
 
+val NO_TEXTURE = TextureRegion()
+
+/**
+ * Hold texture region of your entity.
+ * You can later use this texture to draw your entity in the screen.
+ * You can also set the alpha (transparency) and horizontal flip
+ * of it.
+ *
+ * The offset can be use if you want to apply an offset when rendering your
+ * texture.
+ */
+class Textured(
+    var texture: TextureRegion = NO_TEXTURE,
+    val offset: Vector2 = Vector2(),
+    var hFlip: Boolean = false,
+    var alpha: Float = 1f
+) : Component
+
+@Deprecated("see Textured")
 data class TextureComponent(var texture: TextureRegion) : Component
 
 data class Position(val value: Vector2 = Vector2()) : Component

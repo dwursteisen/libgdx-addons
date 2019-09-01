@@ -10,6 +10,10 @@ repositories {
     maven {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
+    // for custom packr depency.
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 dependencies {
     compileOnly(kotlin("stdlib"))
