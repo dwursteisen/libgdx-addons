@@ -1,1 +1,4 @@
 language: java
+script:
+  - ./gradlew check
+  - ./gradlew -p src/docs/asciidoc/samples/ check

@@ -91,13 +91,13 @@ Create your game into the `core` directory and use it in `MainClass.kt`.
 .MyGame.kt
 [source,kotlin]
 ----
-include::samples/step2/core/src/main/kotlin/libgdx/MyGame.kt[tags="body"]
+include::samples/core/src/main/kotlin/step2/MyGame.kt[tags="body"]
 ----
 
 .MainClass.kt
 [source,kotlin]
 ----
-include::samples/step2/desktop/src/main/kotlin/libgdx/MainClass.kt[tags="body"]
+include::samples/desktop/src/main/kotlin/step2/MainClass.kt[tags="body"]
 ----
 
 If you run your game, the texture will be displayed on the screen.
@@ -130,7 +130,7 @@ You can now update your game to use the asset manager of libgdx with `Refreshabl
 .MyGame.kt
 [source,kotlin]
 ----
-include::samples/step3/core/src/main/kotlin/libgdx/MyGame.kt[tags="body"]
+include::samples/core/src/main/kotlin/step3/MyGame.kt[tags="body"]
 ----
 <1> Replace the default Texture Loader with the RefreshableTexture Loader;
 <2> Force to load all assets before rendering the game;
