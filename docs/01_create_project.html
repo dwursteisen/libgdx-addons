@@ -475,7 +475,7 @@ It adds necessary repositories for dependencies and add the <a href="https://git
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">buildscript {
     dependencies {
-        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:5b04dc1")
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:016e8b7")
     }
 
     repositories {
@@ -618,7 +618,7 @@ the <a href="https://github.com/dwursteisen/libgdx-addons/tree/master/core-addon
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
     dependencies {
-        implementation("com.github.dwursteisen.libgdx-addons:core-addons:5b04dc1")
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:016e8b7")
     }
 }</code></pre>
 </div>
@@ -700,21 +700,32 @@ having to change your whole code base.
 </div>
 <div class="sect2">
 <h3 id="_setup_a_entity_engine">Setup a entity engine</h3>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-WIP
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>A game is a lot of different entities who share a lot of common behaviours. For example, the player
+and an enemy have bot a position. They have both a size too. You can create a class that both will
+inherit. But it will increase your code complexity. Instead, you can compose your entities of different
+properties: an entity can be a player with a size and a position. An enemy is an entity with a size, a position,
+some other capacities.</p>
+</div>
+<div class="paragraph">
+<p>[Ashley](<a href="https://github.com/libgdx/ashley" class="bare">https://github.com/libgdx/ashley</a>) is one entity engine for libGDX. It is very easy to setup in your project.
+Add ashley as dependencies of your project then refresh it in your IDE.</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
+    dependencies {
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:016e8b7")
+        implementation("com.badlogicgames.ashley:ashley:1.7.3")
+    }
+}</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_react_to_events">React to events</h3>
+<div class="paragraph">
+<p>In your
+=== React to events</p>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -779,7 +790,7 @@ WIP
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Last updated 2019-08-20 23:19:38 +0200
+Last updated 2019-08-31 14:46:27 +0200
 </div>
 </div>
 </body>
