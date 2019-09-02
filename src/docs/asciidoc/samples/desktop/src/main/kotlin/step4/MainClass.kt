@@ -2,6 +2,7 @@ package step4
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
+import step5.MyGame
 
 // tag::body[]
 object MainClass {

@@ -1,4 +1,4 @@
-package step4
+package step5
 
 import Assets
 import com.badlogic.ashley.core.Engine
@@ -14,6 +14,9 @@ import com.github.dwursteisen.libgdx.TextureSplitter
 import com.github.dwursteisen.libgdx.ashley.*
 import com.github.dwursteisen.libgdx.graphics.RefreshableTextureLoader
 import com.github.dwursteisen.libgdx.v2
+import step4.Player
+import step4.PlayerSystem
+import step4.SpriteStrategy
 
 const val SPRITE = 1
 
@@ -22,23 +25,26 @@ class MyGame : Game() {
 
     private val assetManager: AssetManager = AssetManager()
 
-    // <1>
     private val engine = Engine()
 
     private val viewport: Viewport = FitViewport(200f, 200f)
 
+    // <1>
+    private lateinit var eventBus: EventBus
+
     override fun create() {
+
+        eventBus = EventBus()
+
         assetManager.setLoader(Texture::class.java, RefreshableTextureLoader(InternalFileHandleResolver()))
         assetManager.load(Assets.assets_dungeon_sheet_png, Texture::class.java)
         assetManager.finishLoading()
 
-        // <2>
         val split = TextureSplitter(assetManager).split(
             Assets.assets_dungeon_sheet_png, 16, 16
         )
         val playerSprite = split.get(column = 19, row = 7)
 
-        // <3>
         val player = engine.createEntity().apply {
             add(Player())
             add(Position())
@@ -48,19 +54,19 @@ class MyGame : Game() {
         }
         engine.addEntity(player)
 
-        // <4>
+        engine.addSystem(PlayerSystem())
         engine.addSystem(RenderSystem(viewport,
             mapOf(SPRITE to SpriteStrategy())
         ))
-        engine.addSystem(PlayerSystem())
     }
 
     override fun render() {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        // <5>
         engine.update(Gdx.graphics.deltaTime)
+        // <3>
+        eventBus.update(Gdx.graphics.deltaTime)
     }
 
     override fun resize(width: Int, height: Int) {
