@@ -55,8 +55,8 @@ allprojects {
 
 apply(plugin = "libgdx")
 ----
-<1> Add dependency repositories for plugins
-<2> Add dependency repositories for all modules
+<1> Add dependency repositories for plugins;
+<2> Add dependency repositories for all modules.
 
 Run the command `gradlew build`: it will download gradle if needed and download all dependencies and create the minimal setup.
 Once done, it might be long depending of your Internet connection, refresh the project in IntelliJ.
@@ -167,6 +167,32 @@ project(":core") {
     }
 }
 ----
+
+The code of your game needs to be updated to add the entity engine and create your first entity.
+
+.MyGame.kt
+[source,kotlin]
+----
+include::samples/core/src/main/kotlin/step4/MyGame.kt[tags="body"]
+----
+<1> Create an `EntityEngine`. Please note that you can use a `PooledEntityEngine` too;
+<2> Split the texture to get only a region. This region will be use to display the player;
+<3> Create your first entity. This entity is marked as the `Player`. Has a position, a size, a texture and marked as to be rendered;
+<4> Add all systems to the engine. For now, we will just add a system that will render all entities on screen;
+<5> In the render loop, update the engine.
+
+When creating the player, please note that only the component `Player` was created.
+
+.Components.kt
+[source,kotlin]
+----
+include::samples/core/src/main/kotlin/step4/Components.kt[]
+----
+
+Other components are provided by `ashley-addons`: `Position`, `Size`, …
+
+IMPORTANT: Do not forget to set a size! Otherwise your entity will have a width and heigh
+of 0 so will be invisible.
 
 === React to events
 

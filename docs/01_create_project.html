@@ -506,10 +506,10 @@ apply(plugin = "libgdx")</code></pre>
 <div class="colist arabic">
 <ol>
 <li>
-<p>Add dependency repositories for plugins</p>
+<p>Add dependency repositories for plugins;</p>
 </li>
 <li>
-<p>Add dependency repositories for all modules</p>
+<p>Add dependency repositories for all modules.</p>
 </li>
 </ol>
 </div>
@@ -641,7 +641,7 @@ the <a href="https://github.com/dwursteisen/libgdx-addons/tree/master/core-addon
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
     dependencies {
-        implementation("com.github.dwursteisen.libgdx-addons:core-addons:27121bf")
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:6162ea9")
     }
 }</code></pre>
 </div>
@@ -739,11 +739,115 @@ Add ashley as dependencies of your project then refresh it in your IDE.</p>
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
     dependencies {
-        implementation("com.github.dwursteisen.libgdx-addons:core-addons:27121bf")
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:6162ea9")
         implementation("com.badlogicgames.ashley:ashley:1.7.3")
     }
 }</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The code of your game needs to be updated to add the entity engine and create your first entity.</p>
+</div>
+<div class="listingblock">
+<div class="title">MyGame.kt</div>
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">class MyGame : Game() {
+
+    private val assetManager: AssetManager = AssetManager()
+
+    // <b class="conum">(1)</b>
+    private val engine = Engine()
+
+    private val viewport: Viewport = FitViewport(200f, 200f)
+
+    override fun create() {
+        assetManager.setLoader(Texture::class.java, RefreshableTextureLoader(InternalFileHandleResolver()))
+        assetManager.load(Assets.assets_dungeon_sheet_png, Texture::class.java)
+        assetManager.finishLoading()
+
+        // <b class="conum">(2)</b>
+        val split = TextureSplitter(assetManager).split(
+            Assets.assets_dungeon_sheet_png, 16, 16
+        )
+        val playerSprite = split.get(column = 19, row = 7)
+
+        // <b class="conum">(3)</b>
+        val player = engine.createEntity().apply {
+            add(Player())
+            add(Position())
+            add(Size(16 v2 16))
+            add(Textured(texture = playerSprite))
+            add(Render(SPRITE))
+        }
+        engine.addEntity(player)
+
+        // <b class="conum">(4)</b>
+        engine.addSystem(RenderSystem(viewport,
+            mapOf(SPRITE to SpriteStrategy())
+        ))
+    }
+
+    override fun render() {
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+        // <b class="conum">(5)</b>
+        engine.update(Gdx.graphics.deltaTime)
+    }
+
+    override fun resize(width: Int, height: Int) {
+        viewport.update(width, height)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Create an <code>EntityEngine</code>. Please note that you can use a <code>PooledEntityEngine</code> too;</p>
+</li>
+<li>
+<p>Split the texture to get only a region. This region will be use to display the player;</p>
+</li>
+<li>
+<p>Create your first entity. This entity is marked as the <code>Player</code>. Has a position, a size, a texture and marked as to be rendered;</p>
+</li>
+<li>
+<p>Add all systems to the engine. For now, we will just add a system that will render all entities on screen;</p>
+</li>
+<li>
+<p>In the render loop, update the engine.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>When creating the player, please note that only the component <code>Player</code> was created.</p>
+</div>
+<div class="listingblock">
+<div class="title">Components.kt</div>
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">package step4
+
+import com.badlogic.ashley.core.Component
+
+class Player : Component</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Other components are provided by <code>ashley-addons</code>: <code>Position</code>, <code>Size</code>, …</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Do not forget to set a size! Otherwise your entity will have a width and heigh
+of 0 so will be invisible.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -812,7 +916,7 @@ WIP
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Last updated 2019-09-01 22:15:38 +0200
+Last updated 2019-09-02 13:00:16 +0200
 </div>
 </div>
 </body>

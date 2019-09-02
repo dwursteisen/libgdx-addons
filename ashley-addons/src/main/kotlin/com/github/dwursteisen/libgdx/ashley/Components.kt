@@ -1,10 +1,12 @@
 package com.github.dwursteisen.libgdx.ashley
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
 import com.github.dwursteisen.libgdx.ashley.fsm.EntityState
+import com.github.dwursteisen.libgdx.emptyGdxArray
 
 /**
  * An entity can hold states using [StateComponent].
@@ -44,8 +46,30 @@ class Textured(
     var alpha: Float = 1f
 ) : Component
 
-@Deprecated("see Textured")
-data class TextureComponent(var texture: TextureRegion) : Component
+val NO_ANIMATION = Animation<TextureRegion>(0f, emptyGdxArray())
+
+/**
+ * Hold animation of your entity.
+ * The time of the current animation is set to 0 when the animation is changed.
+ *
+ * To update the time of the animation, the [AnimationSystem] needs to be added to the engine.
+ */
+class Animated(
+    animation: Animation<TextureRegion> = NO_ANIMATION,
+    var time: Float = 0f
+) : Component {
+    var animation: Animation<TextureRegion> = animation
+        set(value) {
+            time = 0f
+            field = value
+        }
+}
+
+/**
+ * Hold the information that this entity should be rendered and with which strategy.
+ * The [RenderSystem] will use this strategy to render the entity on screen.
+ */
+class Render(var strategy: Int) : Component
 
 data class Position(val value: Vector2 = Vector2()) : Component
 data class Size(val value: Vector2 = Vector2()) : Component

@@ -21,7 +21,7 @@ tasks.withType<KotlinCompile> {
 
 buildscript {
     dependencies {
-        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:b190c3a")
+        classpath("com.github.dwursteisen.libgdx-addons:libgdx-gradle-plugin:6162ea9")
     }
 
     repositories {
@@ -49,7 +49,7 @@ allprojects {
 
 project(":core") {
     dependencies {
-        implementation("com.github.dwursteisen.libgdx-addons:core-addons:b190c3a")
-        implementation("com.github.dwursteisen.libgdx-addons:ashley-addons:b190c3a")
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:6162ea9")
+        implementation("com.github.dwursteisen.libgdx-addons:ashley-addons:6162ea9")
     }
 }
