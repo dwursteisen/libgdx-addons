@@ -20,7 +20,9 @@ class PlayerSystem : IteratingSystem(Family.all(Player::class.java).get()) {
             entity[position].value.add(-speed * deltaTime, 0f)
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             entity[position].value.add(speed * deltaTime, 0f)
-        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             entity[position].value.add(0f, speed * deltaTime)
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             entity[position].value.add(0f, -speed * deltaTime)

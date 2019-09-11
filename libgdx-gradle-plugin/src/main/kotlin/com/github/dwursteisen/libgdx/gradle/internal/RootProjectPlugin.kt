@@ -21,6 +21,7 @@ class RootProjectPlugin : Plugin<Project> {
 
     private fun addIntelliJRunConfiguration(project: Project) {
         project.apply { it.plugin("org.jetbrains.gradle.plugin.idea-ext") }
+        project.apply { it.plugin("com.github.dwursteisen.libgdx.template") }
 
         val exts = project.extensions.getByName("libgdx") as LibGDXExtensions
 

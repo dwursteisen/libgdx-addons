@@ -20,6 +20,7 @@ dependencies {
     compileOnly(gradleApi())
     api(project(":packr-gradle-plugin"))
     api(project(":assets-gradle-plugin"))
+    api(project(":libgdx-template-gradle-plugin"))
     api(Plugins.intellij)
     api(Plugins.kotlin_gradle)
     api(Plugins.download)
