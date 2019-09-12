@@ -26,6 +26,8 @@ configure<SourceSetContainer> {
             srcDir("src")
             // exclude the source code of the plugin itself
             exclude("main/**")
+            // exclude tests
+            exclude("test/**")
         }
     }
 }

@@ -66,14 +66,16 @@ image::media/create_game_02b.png[title="Your project when everything is ready"]
 === Run your game
 
 Your game project is now ready!
-A new https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configurations.html[Run Configuration] just appear in your IntelliJ.
+
+You can run the game from the command line using `./gradlew run`. Gradle will now compile the code that
+was previously generated and run your game. But it might be more convenient to run the game from IntelliJ.
+
+As you refreshed the project into IntelliJ, a new https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configurations.html[Run Configuration] just appear in your IntelliJ.
 Click on `Add Configuration` and check `Application` run configurations. You will see a run configuration added in IntelliJ
 to run your game.
 
 image::media/create_game_03.png[]
 
-NOTE: The first run will crash! Because you need to create your first game class.
-See bellow for more information.
 
 === Draw your first texture
 

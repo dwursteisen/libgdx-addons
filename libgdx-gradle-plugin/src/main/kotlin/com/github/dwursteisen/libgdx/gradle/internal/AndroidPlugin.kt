@@ -7,66 +7,39 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
 import java.io.File
 
-class AndroidPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
+class AndroidPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-            project.apply { it.plugin("android") }
-            project.apply { it.plugin("kotlin-android") }
+        project.apply { it.plugin("android") }
+        project.apply { it.plugin("kotlin-android") }
 
-            setupMainClass(project, exts)
-            addDefaultLibraries(project)
-            setupAndroidExtension(project)
+        project.rootProject.extensions.configure(LibGDXExtensions::class.java) { exts ->
+            addDefaultLibraries(project, exts)
+            setupAndroidExtension(project, exts)
             createNativesLibCopyTasks(project)
-    }
-
-    private fun setupMainClass(project: Project, exts: LibGDXExtensions) {
-        project.beforeEvaluate {
-            exts.androidMainClass =
-                exts.androidMainClass ?: tryFindMainClass(project) ?: createMainClass() ?: tryFindMainClass(project)
         }
     }
 
-    private fun tryFindMainClass(project: Project): String? {
-        return project.tryFindClassWhichMatch { lines ->
-            lines.filter { line ->
-                line.contains(": AndroidApplication()") || line.contains("import com.badlogic.gdx.backends.android.AndroidApplication")
-            }
-                .count() >= 2
-        }
+    private fun addDefaultLibraries(project: Project, exts: LibGDXExtensions) {
+        val version = exts.version.get()
+        project.configurations.create("natives")
+        project.dependencies.add("implementation", project.dependencies.project(mapOf("path" to ":core")))
+        project.dependencies.add("implementation", "com.badlogicgames.gdx:gdx-backend-android:$version")
+        project.dependencies.add("implementation", "org.jetbrains.kotlin:kotlin-stdlib")
+        project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-armeabi")
+        project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-armeabi-v7a")
+        project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-x86")
+        project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-arm64-v8a")
+        project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-x86_64")
     }
 
-    private fun createMainClass(): String {
-        // TODO: 1- create a String with all Kotlin code
-        // TODO: 2- write this String on the disk
-        // TODO: 3- Return the path of this new file.
-        // TODO("return path of the nerwly created class")
-        return ""
-    }
-
-    private fun addDefaultLibraries(project: Project) {
-        project.beforeEvaluate {
-            val version = exts.version
-            project.configurations.create("natives")
-            project.dependencies.add("implementation", project.dependencies.project(mapOf("path" to ":core")))
-            project.dependencies.add("implementation", "com.badlogicgames.gdx:gdx-backend-android:$version")
-            project.dependencies.add("implementation", "org.jetbrains.kotlin:kotlin-stdlib")
-            project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-armeabi")
-            project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-armeabi-v7a")
-            project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-x86")
-            project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-arm64-v8a")
-            project.dependencies.add("natives", "com.badlogicgames.gdx:gdx-platform:$version:natives-x86_64")
-        }
-    }
-
-    private fun setupAndroidExtension(project: Project) {
+    private fun setupAndroidExtension(project: Project, exts: LibGDXExtensions) {
         val androidExts = project.extensions.getByName("android") as AppExtension
-        project.beforeEvaluate {
-            androidExts.compileSdkVersion = androidExts.compileSdkVersion ?: "android-28"
-            androidExts.defaultConfig.minSdkVersion(21)
-            androidExts.defaultConfig.targetSdkVersion(28)
-            androidExts.sourceSets.getByName("main") {
-                it.java.srcDirs("src/main/kotlin")
-                it.assets.srcDirs(exts.assetsDirectory)
-            }
+        androidExts.compileSdkVersion = androidExts.compileSdkVersion ?: "android-28"
+        androidExts.defaultConfig.minSdkVersion(21)
+        androidExts.defaultConfig.targetSdkVersion(28)
+        androidExts.sourceSets.getByName("main") {
+            it.java.srcDirs("src/main/kotlin")
+            it.assets.srcDirs(exts.assetsDirectory.orNull ?: project.tryFindAndroidMainClass())
         }
     }
 

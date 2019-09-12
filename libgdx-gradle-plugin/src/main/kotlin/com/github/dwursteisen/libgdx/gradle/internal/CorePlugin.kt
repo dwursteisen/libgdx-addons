@@ -7,20 +7,20 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
-class CorePlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
+class CorePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         // Add Java plugin to access sourceSets extensions
         project.apply { it.plugin("org.gradle.java") }
         project.apply { it.plugin("org.jetbrains.kotlin.jvm") }
         project.apply { it.plugin("java-library") }
 
-        exts.assetsDirectory = exts.assetsDirectory ?: project.tryFindAssetsDirectory()
+        project.rootProject.extensions.configure(LibGDXExtensions::class.java) { exts ->
+            val version = exts.version
+            project.dependencies.add("api", "com.badlogicgames.gdx:gdx:$version")
+            project.dependencies.add("implementation", "org.jetbrains.kotlin:kotlin-stdlib")
+            addAssetsTask(project, exts)
+        }
 
-        val version = exts.version
-        project.dependencies.add("api", "com.badlogicgames.gdx:gdx:$version")
-        project.dependencies.add("implementation", "org.jetbrains.kotlin:kotlin-stdlib")
-
-        addAssetsTask(project)
         setupKotlin(project)
     }
 
@@ -35,10 +35,11 @@ class CorePlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
         }
     }
 
-    private fun addAssetsTask(project: Project) {
+    private fun addAssetsTask(project: Project, exts: LibGDXExtensions) {
         project.apply { it.plugin("assets") }
         project.tasks.withType(AssetsTask::class.java) { task ->
-            exts.assetsDirectory?.let { task.assetsDirectory.set(project.files(it)) }
+            val assetsDirectory = exts.assetsDirectory.orNull ?: project.tryFindAssetsDirectory()
+            task.assetsDirectory.set(project.files(assetsDirectory))
 
             val compileKotlinTask = project.tasks.withType(KotlinCompile::class.java)
             compileKotlinTask.forEach { compiler ->

@@ -7,8 +7,7 @@ import org.gradle.api.tasks.SourceSetContainer
 import java.io.File
 
 fun Project.tryFindAssetsDirectory(): File? {
-    val assetsDirectory = this.projectDir.listFiles { _, name -> name == "assets" }
-    return assetsDirectory.firstOrNull()
+    return project.rootDir.resolve("core/src/main/assets")
 }
 
 fun Project.tryFindClassWhichMatch(filter: (Sequence<String>) -> Boolean): String? {
@@ -36,6 +35,22 @@ private class MainClassVisitor(val filter: (Sequence<String>) -> Boolean, var ma
                 .replace(".kt", "")
                 .replace("/", ".")
         }
+    }
+}
+
+fun Project.tryFindMainClass(): String? {
+    return project.subprojects.firstOrNull { it.name == "desktop" }?.tryFindClassWhichMatch { lines ->
+        lines.filter { line -> line.contains("fun main(") || line.contains("import com.badlogic.gdx.backends.lwjgl.LwjglApplication") }
+            .count() >= 2
+    }
+}
+
+fun Project.tryFindAndroidMainClass(): String? {
+    return project.subprojects.firstOrNull { it.name == "android" }?.tryFindClassWhichMatch { lines ->
+        lines.filter { line ->
+            line.contains(": AndroidApplication()") || line.contains("import com.badlogic.gdx.backends.android.AndroidApplication")
+        }
+            .count() >= 2
     }
 }
 

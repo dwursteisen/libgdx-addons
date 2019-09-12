@@ -18,13 +18,18 @@ repositories {
 dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(gradleApi())
+
+    implementation(project(":commons-gradle-plugin"))
     api(project(":packr-gradle-plugin"))
     api(project(":assets-gradle-plugin"))
     api(project(":libgdx-template-gradle-plugin"))
+
     api(Plugins.intellij)
     api(Plugins.kotlin_gradle)
     api(Plugins.download)
     api(Plugins.android)
+
     testImplementation(TestDependencies.junit)
+    testImplementation(TestDependencies.assertJ)
     testImplementation(gradleTestKit())
 }

@@ -1,5 +1,6 @@
 package com.github.dwursteisen.libgdx.gradle
 
+import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Before
@@ -63,14 +64,14 @@ allprojects {
             .withPluginClasspath()
             .build()
 
-        assert(result.task(":build")?.outcome == TaskOutcome.SUCCESS)
+        assertThat(result.task(":build")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
 
         val coreDirectory = File(temporaryFolder.root, "core/src/main/kotlin/")
-        assert(coreDirectory.isDirectory)
+        assertThat(coreDirectory).isDirectory()
 
         val desktopDirectory = File(temporaryFolder.root, "desktop/src/main/kotlin/")
-        assert(desktopDirectory.isDirectory)
+        assertThat(desktopDirectory).isDirectory()
 
-        assert(settings.readText().contains("include(\"core\", \"desktop\")"))
+        assertThat(settings.readText()).contains("include(\"core\")")
     }
 }

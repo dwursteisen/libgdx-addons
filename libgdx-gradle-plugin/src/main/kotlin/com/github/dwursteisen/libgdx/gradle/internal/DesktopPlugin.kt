@@ -1,8 +1,6 @@
 package com.github.dwursteisen.libgdx.gradle.internal
 
 import com.github.dwursteisen.libgdx.gradle.LibGDXExtensions
-import com.github.dwursteisen.libgdx.gradle.internal.tasks.GenerateClassReference
-import com.github.dwursteisen.libgdx.gradle.internal.tasks.GenerateCodeTask
 import com.github.dwursteisen.libgdx.packr.PackrPluginExtension
 import fi.linuxbox.gradle.download.Download
 import org.gradle.api.NamedDomainObjectContainer
@@ -15,9 +13,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io.File
 
-class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
+class DesktopPlugin : Plugin<Project> {
 
     private val logger: Logger = LoggerFactory.getLogger(DesktopPlugin::class.java)
 
@@ -27,58 +24,19 @@ class DesktopPlugin(private val exts: LibGDXExtensions) : Plugin<Project> {
         project.apply { it.plugin("org.jetbrains.kotlin.jvm") }
         project.apply { it.plugin("org.jetbrains.gradle.plugin.idea-ext") }
 
-        logger.info("Detecting Desktop module. Will add custom tasks: dist and run.")
-        exts.mainClass = exts.mainClass ?: tryFindMainClass(project)
-        exts.assetsDirectory = exts.assetsDirectory ?: project.tryFindAssetsDirectory()
+        project.rootProject.extensions.configure(LibGDXExtensions::class.java) { exts ->
+            logger.info("Detecting Desktop module. Will add custom tasks: dist and run.")
 
-        val sourceSets = project.extensions.getByName("sourceSets") as SourceSetContainer
+            val sourceSets = project.extensions.getByName("sourceSets") as SourceSetContainer
 
-        addGenerateMainClass(project)
-        addDependencies(project)
-        addDistTask(project, sourceSets)
-        addRunTask(project, sourceSets)
-        addOpenJdkDownloadTask(project)
-        addPackr(project)
+            addDependencies(project, exts)
+            addDistTask(project, sourceSets, exts)
+            addRunTask(project, sourceSets, exts)
+            addOpenJdkDownloadTask(project, exts)
+            addPackr(project, exts)
 
-        setupKotlin(project)
-    }
-
-    private fun addGenerateMainClass(project: Project) {
-        val ref = project.tasks.create("generate-desktop-main-ref", GenerateClassReference::class.java) {
-            it.group = "libgdx"
-            it.mainClassFile = exts.mainClass?.replace(".", "/").let { f -> project.file("$f.kt") }
-            it.mainClassReference = File(project.buildDir, "generated/main-class-reference.txt")
+            setupKotlin(project)
         }
-
-        val gen = project.tasks.create("generate-desktop-main", GenerateCodeTask::class.java) {
-            it.group = "libgdx"
-            it.description = "Generate Default Main class"
-
-            it.content = """
-package libgdx
-
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
-
-
-    object MainClass {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            LwjglApplication(TODO("Replace With Your Game Class"), LwjglApplicationConfiguration().apply {
-                width = 600
-                height = 600
-            })
-        }
-}
- """
-            val classpath = exts.mainClass?.replace(".", "/")?.let { f -> "$f.kt" }
-                ?: "src/main/kotlin/libgdx/MainClass.kt"
-            it.mainClassFile = project.file(classpath)
-            it.mainClassReference = File(project.buildDir, "generated/main-class-reference.txt")
-        }
-
-        project.tasks.getByName("classes").dependsOn("generate-desktop-main")
-        gen.dependsOn(ref)
     }
 
     private fun setupKotlin(project: Project) {
@@ -94,8 +52,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
         }
     }
 
-    private fun addDependencies(project: Project) {
-        val version = exts.version
+    private fun addDependencies(project: Project, exts: LibGDXExtensions) {
+        val version = exts.version.get()
 
         project.repositories.mavenCentral()
 
@@ -105,7 +63,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
         project.dependencies.add("implementation", "org.jetbrains.kotlin:kotlin-stdlib")
     }
 
-    private fun addOpenJdkDownloadTask(project: Project) {
+    private fun addOpenJdkDownloadTask(project: Project, exts: LibGDXExtensions) {
         project.apply { it.plugin("fi.linuxbox.download") }
 
         project.tasks.create("open-jdk-mac", Download::class.java) { dl ->
@@ -118,18 +76,16 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
             dl.group = "packr"
             dl.to(project.file("build/open-jdk/open-jdk-windows.zip"))
             dl.from(exts.openJdk.windows.toString())
-
         }
 
         project.tasks.create("open-jdk-linux", Download::class.java) { dl ->
             dl.group = "packr"
             dl.to(project.file("build/open-jdk/open-jdk-linux.zip"))
             dl.from(exts.openJdk.linux.toString())
-
         }
     }
 
-    private fun addPackr(project: Project) {
+    private fun addPackr(project: Project, exts: LibGDXExtensions) {
         project.apply { it.plugin("com.github.dwursteisen.libgdx.packr.PackrPlugin") }
         project.extensions.configure<NamedDomainObjectContainer<PackrPluginExtension>>("packr") { container ->
             container.create("macosx") {
@@ -162,20 +118,20 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
         }
     }
 
-    private fun addRunTask(project: Project, sourceSets: SourceSetContainer) {
+    private fun addRunTask(project: Project, sourceSets: SourceSetContainer, exts: LibGDXExtensions) {
         project.tasks.create("run", JavaExec::class.java) { exec ->
             exec.group = "libgdx"
             exec.doFirst {
                 it as JavaExec
-                it.main = exts.mainClass!!
+                it.main = exts.mainClass.orNull ?: project.tryFindMainClass()!!
                 it.classpath = sourceSets.getByName("main").runtimeClasspath
                 it.standardInput = System.`in`
-                it.workingDir = exts.assetsDirectory!!
+                it.workingDir = exts.assetsDirectory.orNull ?: project.tryFindAssetsDirectory()!!
             }
         }
     }
 
-    private fun addDistTask(project: Project, sourceSets: SourceSetContainer) {
+    private fun addDistTask(project: Project, sourceSets: SourceSetContainer, exts: LibGDXExtensions) {
         val dist = project.tasks.create("dist", Jar::class.java) { jar ->
             jar.group = "libgdx"
 
@@ -188,19 +144,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
                 val files = project.files(sourceSets.getByName("main").runtimeClasspath)
                 jar.from(files.filter { f -> f.exists() }.map { f -> if (f.isDirectory) f else project.zipTree(f) })
 
-                jar.from(project.files(exts.assetsDirectory))
+                jar.from(project.files(exts.assetsDirectory.orNull ?: project.tryFindAssetsDirectory()))
                 jar.manifest { m ->
-                    m.attributes(mapOf("Main-Class" to exts.mainClass))
+                    m.attributes(mapOf("Main-Class" to (exts.mainClass.orNull ?: project.tryFindMainClass()!!)))
                 }
             }
         }
         dist.dependsOn(project.tasks.getByName("classes"))
-    }
-
-    private fun tryFindMainClass(project: Project): String? {
-        return project.tryFindClassWhichMatch { lines ->
-            lines.filter { line -> line.contains("fun main(") || line.contains("import com.badlogic.gdx.backends.lwjgl.LwjglApplication") }
-                .count() >= 2
-        }
     }
 }

@@ -527,8 +527,14 @@ Once done, it might be long depending of your Internet connection, refresh the p
 <div class="sect2">
 <h3 id="_run_your_game">Run your game</h3>
 <div class="paragraph">
-<p>Your game project is now ready!
-A new <a href="https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configurations.html">Run Configuration</a> just appear in your IntelliJ.
+<p>Your game project is now ready!</p>
+</div>
+<div class="paragraph">
+<p>You can run the game from the command line using <code>./gradlew run</code>. Gradle will now compile the code that
+was previously generated and run your game. But it might be more convenient to run the game from IntelliJ.</p>
+</div>
+<div class="paragraph">
+<p>As you refreshed the project into IntelliJ, a new <a href="https://www.jetbrains.com/help/idea/creating-and-editing-run-debug-configurations.html">Run Configuration</a> just appear in your IntelliJ.
 Click on <code>Add Configuration</code> and check <code>Application</code> run configurations. You will see a run configuration added in IntelliJ
 to run your game.</p>
 </div>
@@ -536,19 +542,6 @@ to run your game.</p>
 <div class="content">
 <img src="media/create_game_03.png" alt="create game 03">
 </div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-The first run will crash! Because you need to create your first game class.
-See bellow for more information.
-</td>
-</tr>
-</table>
 </div>
 </div>
 <div class="sect2">
@@ -641,7 +634,7 @@ the <a href="https://github.com/dwursteisen/libgdx-addons/tree/master/core-addon
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
     dependencies {
-        implementation("com.github.dwursteisen.libgdx-addons:core-addons:6162ea9")
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:77ad05b")
     }
 }</code></pre>
 </div>
@@ -739,7 +732,7 @@ Add ashley as dependencies of your project then refresh it in your IDE.</p>
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
     dependencies {
-        implementation("com.github.dwursteisen.libgdx-addons:core-addons:6162ea9")
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:77ad05b")
         implementation("com.badlogicgames.ashley:ashley:1.7.3")
     }
 }</code></pre>
@@ -785,6 +778,7 @@ Add ashley as dependencies of your project then refresh it in your IDE.</p>
         engine.addSystem(RenderSystem(viewport,
             mapOf(SPRITE to SpriteStrategy())
         ))
+        engine.addSystem(PlayerSystem())
     }
 
     override fun render() {
@@ -916,7 +910,7 @@ WIP
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Last updated 2019-09-02 13:00:16 +0200
+Last updated 2019-09-12 14:26:10 +0200
 </div>
 </div>
 </body>
