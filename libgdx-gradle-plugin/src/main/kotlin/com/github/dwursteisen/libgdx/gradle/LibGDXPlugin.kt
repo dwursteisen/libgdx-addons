@@ -52,19 +52,32 @@ class LibGDXPlugin : Plugin<Project> {
 
                 (ideaModel.project as ExtensionAware).extensions.configure(ProjectSettings::class.java) { projectSettings ->
 
-                    (projectSettings as ExtensionAware).extensions.configure<NamedDomainObjectContainer<RunConfiguration>>("runConfigurations") { runs ->
+                    (projectSettings as ExtensionAware).extensions.configure<NamedDomainObjectContainer<RunConfiguration>>(
+                        "runConfigurations"
+                    ) { runs ->
                         runs as PolymorphicDomainObjectContainer<RunConfiguration>
-                        runs.create("🎮 Run ${project.name.capitalize()} - Desktop", Application::class.java) {
-                            it.mainClass = exts.mainClass.orNull ?: project.tryFindMainClass()
+                        val configuredMainClasses = exts.mainClass.get()
+                        val toConfigure = if (configuredMainClasses.isEmpty()) {
+                            project.tryFindMainClass()
+                        } else {
+                            configuredMainClasses
+                        }
+                        toConfigure.forEach { mainClass ->
 
-                            val assetsDirectory = exts.assetsDirectory.orNull ?: project.tryFindAssetsDirectory()
-                            it.workingDirectory = assetsDirectory?.absolutePath
+                            val className = mainClass.capitalize()
 
-                            if (project.childProjects.containsKey("android")) {
-                                // the plugin android trigger some bugs in IntelliJ.
-                                it.moduleName = "${project.name}.desktop"
-                            } else {
-                                it.moduleName = "${project.name}.desktop.main" // finger crossed
+                            runs.create("🎮 Run ${project.name.capitalize()} ➡️ $className", Application::class.java) {
+                                it.mainClass = mainClass
+
+                                val assetsDirectory = exts.assetsDirectory.orNull ?: project.tryFindAssetsDirectory()
+                                it.workingDirectory = assetsDirectory?.absolutePath
+
+                                if (project.childProjects.containsKey("android")) {
+                                    // the plugin android trigger some bugs in IntelliJ.
+                                    it.moduleName = "${project.name}.desktop"
+                                } else {
+                                    it.moduleName = "${project.name}.desktop.main" // finger crossed
+                                }
                             }
                         }
                     }

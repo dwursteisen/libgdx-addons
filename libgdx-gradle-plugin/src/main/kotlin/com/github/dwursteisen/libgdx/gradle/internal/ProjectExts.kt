@@ -10,10 +10,10 @@ fun Project.tryFindAssetsDirectory(): File? {
     return project.rootDir.resolve("core/src/main/assets")
 }
 
-fun Project.tryFindClassWhichMatch(filter: (Sequence<String>) -> Boolean): String? {
+private fun Project.tryFindClassesWhichMatch(filter: (Sequence<String>) -> Boolean): List<String> {
     val sourceSets = project.extensions.getByName("sourceSets") as SourceSetContainer
     val mainClassVisitor = MainClassVisitor(filter)
-    val main = sourceSets.firstOrNull { it.name == "main" } ?: return null
+    val main = sourceSets.firstOrNull { it.name == "main" } ?: return emptyList()
     main.allSource
         .asFileTree
         .visit(mainClassVisitor)
@@ -21,7 +21,8 @@ fun Project.tryFindClassWhichMatch(filter: (Sequence<String>) -> Boolean): Strin
     return mainClassVisitor.main
 }
 
-private class MainClassVisitor(val filter: (Sequence<String>) -> Boolean, var main: String? = null) : FileVisitor {
+private class MainClassVisitor(val filter: (Sequence<String>) -> Boolean, var main: List<String> = emptyList()) :
+    FileVisitor {
 
     override fun visitDir(dirDetails: FileVisitDetails) = Unit
 
@@ -31,26 +32,28 @@ private class MainClassVisitor(val filter: (Sequence<String>) -> Boolean, var ma
         }
 
         if (use) {
-            main = fileDetails.path
+            main += fileDetails.path
                 .replace(".kt", "")
                 .replace("/", ".")
         }
     }
 }
 
-fun Project.tryFindMainClass(): String? {
-    return project.subprojects.firstOrNull { it.name == "desktop" }?.tryFindClassWhichMatch { lines ->
-        lines.filter { line -> line.contains("fun main(") || line.contains("import com.badlogic.gdx.backends.lwjgl.LwjglApplication") }
-            .count() >= 2
-    }
+fun Project.tryFindMainClass(): List<String> {
+    return project.subprojects.firstOrNull { it.name == "desktop" }
+        ?.tryFindClassesWhichMatch { lines ->
+            lines.filter { line -> line.contains("fun main(") || line.contains("import com.badlogic.gdx.backends.lwjgl.LwjglApplication") }
+                .count() >= 2
+        } ?: emptyList()
 }
 
-fun Project.tryFindAndroidMainClass(): String? {
-    return project.subprojects.firstOrNull { it.name == "android" }?.tryFindClassWhichMatch { lines ->
-        lines.filter { line ->
-            line.contains(": AndroidApplication()") || line.contains("import com.badlogic.gdx.backends.android.AndroidApplication")
-        }
-            .count() >= 2
-    }
+fun Project.tryFindAndroidMainClass(): List<String> {
+    return project.subprojects.firstOrNull { it.name == "android" }
+        ?.tryFindClassesWhichMatch { lines ->
+            lines.filter { line ->
+                line.contains(": AndroidApplication()") || line.contains("import com.badlogic.gdx.backends.android.AndroidApplication")
+            }
+                .count() >= 2
+        } ?: emptyList()
 }
 

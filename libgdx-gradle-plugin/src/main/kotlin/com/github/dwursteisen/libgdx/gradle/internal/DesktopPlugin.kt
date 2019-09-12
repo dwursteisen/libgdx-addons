@@ -88,68 +88,87 @@ class DesktopPlugin : Plugin<Project> {
     private fun addPackr(project: Project, exts: LibGDXExtensions) {
         project.apply { it.plugin("com.github.dwursteisen.libgdx.packr.PackrPlugin") }
         project.extensions.configure<NamedDomainObjectContainer<PackrPluginExtension>>("packr") { container ->
-            container.create("macosx") {
-                it.outputDir.set(project.buildDir.resolve("packr/macosx/${project.rootProject.name}.app"))
-                it.bundleIdentifier.set(project.rootProject.name)
-                it.jdk.set(project.buildDir.resolve("open-jdk/open-jdk-mac.zip").absolutePath)
-                it.mainClass.set(exts.mainClass)
-                it.classpath.set(project.tasks.getByPath("dist").outputs.files.singleFile)
-            }
+            val mainClass = exts.mainClass.get()
+            mainClass.forEach { m ->
+                val className = m
+                container.create("macosx-$className") {
+                    it.outputDir.set(project.buildDir.resolve("packr/macosx/${project.rootProject.name}.app"))
+                    it.bundleIdentifier.set(project.rootProject.name)
+                    it.jdk.set(project.buildDir.resolve("open-jdk/open-jdk-mac.zip").absolutePath)
+                    it.mainClass.set(m)
+                    it.classpath.set(project.tasks.getByPath("dist").outputs.files.singleFile)
+                }
 
-            container.create("windows") {
-                it.outputDir.set(project.buildDir.resolve("packr/windows"))
-                it.jdk.set(project.buildDir.resolve("open-jdk/open-jdk-windows.zip").absolutePath)
-                it.mainClass.set(exts.mainClass)
-                it.classpath.set(project.tasks.getByPath("dist").outputs.files.singleFile)
-            }
+                container.create("windows-$className") {
+                    it.outputDir.set(project.buildDir.resolve("packr/windows"))
+                    it.jdk.set(project.buildDir.resolve("open-jdk/open-jdk-windows.zip").absolutePath)
+                    it.mainClass.set(m)
+                    it.classpath.set(project.tasks.getByPath("dist").outputs.files.singleFile)
+                }
 
-            container.create("linux") {
-                it.outputDir.set(project.buildDir.resolve("packr/linux"))
-                it.jdk.set(project.buildDir.resolve("open-jdk/open-jdk-linux.zip").absolutePath)
-                it.mainClass.set(exts.mainClass)
-                it.classpath.set(project.tasks.getByPath("dist").outputs.files.singleFile)
+                container.create("linux-$className") {
+                    it.outputDir.set(project.buildDir.resolve("packr/linux"))
+                    it.jdk.set(project.buildDir.resolve("open-jdk/open-jdk-linux.zip").absolutePath)
+                    it.mainClass.set(m)
+                    it.classpath.set(project.tasks.getByPath("dist").outputs.files.singleFile)
+                }
+                project.afterEvaluate {
+                    it.tasks.getByName("macosx-${className}Packr").dependsOn("dist", "open-jdk-mac")
+                    it.tasks.getByName("windows-${className}Packr").dependsOn("dist", "open-jdk-windows")
+                    it.tasks.getByName("linux-${className}Packr").dependsOn("dist", "open-jdk-linux")
+                }
             }
-        }
-
-        project.afterEvaluate {
-            it.tasks.getByName("macosxPackr").dependsOn("dist", "open-jdk-mac")
-            it.tasks.getByName("windowsPackr").dependsOn("dist", "open-jdk-windows")
-            it.tasks.getByName("linuxPackr").dependsOn("dist", "open-jdk-linux")
         }
     }
 
     private fun addRunTask(project: Project, sourceSets: SourceSetContainer, exts: LibGDXExtensions) {
-        project.tasks.create("run", JavaExec::class.java) { exec ->
-            exec.group = "libgdx"
-            exec.doFirst {
-                it as JavaExec
-                it.main = exts.mainClass.orNull ?: project.tryFindMainClass()!!
-                it.classpath = sourceSets.getByName("main").runtimeClasspath
-                it.standardInput = System.`in`
-                it.workingDir = exts.assetsDirectory.orNull ?: project.tryFindAssetsDirectory()!!
+        val mainClasses = if (exts.mainClass.get().isEmpty()) {
+            project.tryFindMainClass()
+        } else {
+            exts.mainClass.get()
+        }
+
+        mainClasses.forEach { mainClass ->
+            val className = mainClass.split(".").last()
+            project.tasks.create("run-$className", JavaExec::class.java) { exec ->
+                exec.group = "libgdx"
+                exec.doFirst {
+                    it as JavaExec
+                    it.main = mainClass
+                    it.classpath = sourceSets.getByName("main").runtimeClasspath
+                    it.standardInput = System.`in`
+                    it.workingDir = exts.assetsDirectory.orNull ?: project.tryFindAssetsDirectory()!!
+                }
             }
         }
     }
 
     private fun addDistTask(project: Project, sourceSets: SourceSetContainer, exts: LibGDXExtensions) {
-        val dist = project.tasks.create("dist", Jar::class.java) { jar ->
-            jar.group = "libgdx"
+        val mainClasses = if (exts.mainClass.get().isEmpty()) {
+            project.tryFindMainClass()
+        } else {
+            exts.mainClass.get()
+        }
 
-            jar.archiveFileName.set("${project.rootProject.name}-desktop.jar")
+        mainClasses.forEach { mainClass ->
+            val className = mainClass.last()
+            val dist = project.tasks.create("dist-$className", Jar::class.java) { jar ->
+                jar.group = "libgdx"
 
-            jar.doFirst {
-                jar.from(project.files(sourceSets.getByName("main").output.classesDirs))
-                jar.from(project.files(sourceSets.getByName("main").output.resourcesDir))
+                jar.archiveFileName.set("${project.rootProject.name}-desktop.jar")
 
-                val files = project.files(sourceSets.getByName("main").runtimeClasspath)
-                jar.from(files.filter { f -> f.exists() }.map { f -> if (f.isDirectory) f else project.zipTree(f) })
+                jar.doFirst {
+                    jar.from(project.files(sourceSets.getByName("main").output.classesDirs))
+                    jar.from(project.files(sourceSets.getByName("main").output.resourcesDir))
 
-                jar.from(project.files(exts.assetsDirectory.orNull ?: project.tryFindAssetsDirectory()))
-                jar.manifest { m ->
-                    m.attributes(mapOf("Main-Class" to (exts.mainClass.orNull ?: project.tryFindMainClass()!!)))
+                    val files = project.files(sourceSets.getByName("main").runtimeClasspath)
+                    jar.from(files.filter { f -> f.exists() }.map { f -> if (f.isDirectory) f else project.zipTree(f) })
+
+                    jar.from(project.files(exts.assetsDirectory.orNull ?: project.tryFindAssetsDirectory()))
+                    jar.manifest { m -> m.attributes(mapOf("Main-Class" to (mainClass))) }
                 }
             }
+            dist.dependsOn(project.tasks.getByName("classes"))
         }
-        dist.dependsOn(project.tasks.getByName("classes"))
     }
 }

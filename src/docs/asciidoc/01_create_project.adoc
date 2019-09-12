@@ -79,7 +79,7 @@ image::media/create_game_03.png[]
 
 === Draw your first texture
 
-Grab an image and copy it into the `assets` directory of the `core` module.
+Grab an image and copy it into the `src/main/assets` directory of the `core` module.
 You can find free image / sprite sheet on the https://opengameart.org/content/a-blocky-dungeon[OpenGameArt.org].
 
 Run the command `./gradlew build`, the command will generate a new class `Assets` that will

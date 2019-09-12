@@ -19,7 +19,8 @@ open class LibGDXExtensions(project: Project) {
 
     var version = project.createProperty<String>().value("1.9.10")
 
-    var mainClass = project.createProperty<String>()
+    var mainClass = project.createProperty<List<String>>()
+        .value(emptyList())
 
     var androidClass = project.createProperty<String>()
 
