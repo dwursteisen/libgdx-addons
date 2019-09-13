@@ -3,6 +3,7 @@ package com.github.dwursteisen.libgdx.ashley
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.maps.MapLayer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
 import com.github.dwursteisen.libgdx.ashley.fsm.EntityState
@@ -86,3 +87,5 @@ data class Rotation(
     var degree: Float = 0f,
     val origin: Vector2 = Vector2()
 ) : Component
+
+class MapLayerComponent(var zLevel: Int, var layer: MapLayer) : Component

@@ -1,3 +1,23 @@
 == LibGDX Libraries
 
 TIP: WIP
+
+=== admob-addons
+
+TIP: TODO
+
+=== aseprite-addons
+
+TIP: TODO
+
+=== ashley-addons
+
+TIP: TODO
+
+=== core-addons
+
+TIP: TODO
+
+=== libgdx-test
+
+TIP: TODO

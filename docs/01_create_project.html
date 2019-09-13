@@ -634,7 +634,7 @@ the <a href="https://github.com/dwursteisen/libgdx-addons/tree/master/core-addon
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
     dependencies {
-        implementation("com.github.dwursteisen.libgdx-addons:core-addons:1e83c7d")
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:aec1a1b")
     }
 }</code></pre>
 </div>
@@ -732,7 +732,7 @@ Add ashley as dependencies of your project then refresh it in your IDE.</p>
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">project(":core") {
     dependencies {
-        implementation("com.github.dwursteisen.libgdx-addons:core-addons:1e83c7d")
+        implementation("com.github.dwursteisen.libgdx-addons:core-addons:aec1a1b")
         implementation("com.badlogicgames.ashley:ashley:1.7.3")
     }
 }</code></pre>
@@ -815,7 +815,7 @@ Add ashley as dependencies of your project then refresh it in your IDE.</p>
 </ol>
 </div>
 <div class="paragraph">
-<p>When creating the player, please note that only the component <code>Player</code> was created.</p>
+<p>When creating the player, please note that only the component <code>Player</code> needs to be created.</p>
 </div>
 <div class="listingblock">
 <div class="title">Components.kt</div>
@@ -839,6 +839,50 @@ class Player : Component</code></pre>
 <td class="content">
 Do not forget to set a size! Otherwise your entity will have a width and heigh
 of 0 so will be invisible.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The player can be moved by detecting if some keys where pressed, like left, right, …</p>
+</div>
+<div class="listingblock">
+<div class="title">PlayerSystem.kt</div>
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">class PlayerSystem : IteratingSystem(Family.all(Player::class.java).get()) {
+
+    private val position = get&lt;Position&gt;()
+
+    private val speed = 64f
+
+    override fun processEntity(entity: Entity, deltaTime: Float) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            entity[position].value.add(-speed * deltaTime, 0f)
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            entity[position].value.add(speed * deltaTime, 0f)
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            entity[position].value.add(0f, speed * deltaTime)
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            entity[position].value.add(0f, -speed * deltaTime)
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Regarding the key that was pressed, the position of the entity is extracted.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The property component is accessed from the entity like it is a map.
+More information can be found in the <a href="#ashley-addons">[ashley-addons]</a> section.
 </td>
 </tr>
 </table>
@@ -910,7 +954,7 @@ WIP
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Last updated 2019-09-13 00:59:39 +0200
+Last updated 2019-09-13 11:52:06 +0200
 </div>
 </div>
 </body>

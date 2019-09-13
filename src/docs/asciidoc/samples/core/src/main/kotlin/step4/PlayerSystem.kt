@@ -9,11 +9,12 @@ import com.github.dwursteisen.libgdx.ashley.Position
 import com.github.dwursteisen.libgdx.ashley.get
 import step4.Player
 
+// tag::body[]
 class PlayerSystem : IteratingSystem(Family.all(Player::class.java).get()) {
 
     private val position = get<Position>()
 
-    private val speed = 32f
+    private val speed = 64f
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -28,5 +29,5 @@ class PlayerSystem : IteratingSystem(Family.all(Player::class.java).get()) {
             entity[position].value.add(0f, -speed * deltaTime)
         }
     }
-
 }
+// end::body[]

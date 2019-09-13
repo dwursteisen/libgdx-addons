@@ -23,6 +23,7 @@ import step4.PlayerSystem
 import step4.SpriteStrategy
 
 const val SPRITE = 1
+const val MAP = 2
 
 // tag::body[]
 class MyGame : Game() {
@@ -71,11 +72,26 @@ class MyGame : Game() {
             }
         }
 
+        val background = engine.createEntity().apply {
+            add(Render(MAP))
+            add(MapLayerComponent(zLevel = 0, layer = map.layers["background"]))
+        }
+        engine.addEntity(background)
+
+        val dungeon = engine.createEntity().apply {
+            add(Render(MAP))
+            add(MapLayerComponent(zLevel = 1, layer = map.layers["dungeon"]))
+        }
+        engine.addEntity(dungeon)
+
         engine.addSystem(PlayerSystem())
         engine.addSystem(
             RenderSystem(
                 viewport,
-                mapOf(SPRITE to SpriteStrategy())
+                mapOf(
+                    SPRITE to SpriteStrategy(),
+                    MAP to MapLayerStrategy(viewport)
+                )
             )
         )
     }

@@ -183,7 +183,7 @@ include::samples/core/src/main/kotlin/step4/MyGame.kt[tags="body"]
 <4> Add all systems to the engine. For now, we will just add a system that will render all entities on screen;
 <5> In the render loop, update the engine.
 
-When creating the player, please note that only the component `Player` was created.
+When creating the player, please note that only the component `Player` needs to be created.
 
 .Components.kt
 [source,kotlin]
@@ -195,6 +195,19 @@ Other components are provided by `ashley-addons`: `Position`, `Size`, …
 
 IMPORTANT: Do not forget to set a size! Otherwise your entity will have a width and heigh
 of 0 so will be invisible.
+
+The player can be moved by detecting if some keys where pressed, like left, right, …
+
+.PlayerSystem.kt
+[source,kotlin]
+----
+include::samples/core/src/main/kotlin/step4/PlayerSystem.kt[tags="body"]
+----
+
+Regarding the key that was pressed, the position of the entity is extracted.
+
+NOTE: The property component is accessed from the entity like it is a map.
+More information can be found in the <<ashley-addons>> section.
 
 === React to events
 

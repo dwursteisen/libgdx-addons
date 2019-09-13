@@ -5,9 +5,10 @@ import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.maps.MapLayer
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.utils.viewport.Viewport
 
 interface RenderStrategy {
@@ -52,6 +53,35 @@ abstract class TexturedStrategy : RenderStrategy {
             1f, 1f,
             degree
         )
+    }
+}
+
+class LayerRenderer(batch: SpriteBatch) : OrthogonalTiledMapRenderer(null, batch) {
+
+    fun renderLayerOf(mapLayer: MapLayer) {
+        renderMapLayer(mapLayer)
+    }
+}
+
+class MapLayerStrategy(private val viewport: Viewport) : RenderStrategy {
+
+    private val mapLayer = get<MapLayerComponent>()
+
+    private var cache: LayerRenderer? = null
+
+    override fun zLevel(entity: Entity, delta: Float): Float {
+        return entity[mapLayer].zLevel.toFloat()
+    }
+
+    override fun render(entity: Entity, batch: SpriteBatch) {
+        val renderer = cache ?: generateRender(batch)
+        renderer.setView(viewport.camera as OrthographicCamera)
+        renderer.renderLayerOf(entity[mapLayer].layer)
+    }
+
+    private fun generateRender(batch: SpriteBatch): LayerRenderer {
+        cache = LayerRenderer(batch)
+        return cache!!
     }
 }
 

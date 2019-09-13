@@ -128,9 +128,9 @@ class DesktopPlugin : Plugin<Project> {
             exts.mainClass.get()
         }
 
-        mainClasses.forEach { mainClass ->
-            val className = mainClass.split(".").last()
-            project.tasks.create("run-$className", JavaExec::class.java) { exec ->
+        mainClasses.firstOrNull()?.let { mainClass ->
+            // Create default run task
+            project.tasks.create("run", JavaExec::class.java) { exec ->
                 exec.group = "libgdx"
                 exec.doFirst {
                     it as JavaExec
@@ -138,6 +138,22 @@ class DesktopPlugin : Plugin<Project> {
                     it.classpath = sourceSets.getByName("main").runtimeClasspath
                     it.standardInput = System.`in`
                     it.workingDir = exts.assetsDirectory.orNull ?: project.tryFindAssetsDirectory()!!
+                }
+            }
+        }
+
+        if (mainClasses.size > 1) {
+            mainClasses.forEach { mainClass ->
+                val className = mainClass.split(".").last()
+                project.tasks.create("run-$className", JavaExec::class.java) { exec ->
+                    exec.group = "libgdx"
+                    exec.doFirst {
+                        it as JavaExec
+                        it.main = mainClass
+                        it.classpath = sourceSets.getByName("main").runtimeClasspath
+                        it.standardInput = System.`in`
+                        it.workingDir = exts.assetsDirectory.orNull ?: project.tryFindAssetsDirectory()!!
+                    }
                 }
             }
         }
