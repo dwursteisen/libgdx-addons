@@ -18,9 +18,7 @@ import com.github.dwursteisen.libgdx.getValue
 import com.github.dwursteisen.libgdx.graphics.RefreshableTextureLoader
 import com.github.dwursteisen.libgdx.scanObjects
 import com.github.dwursteisen.libgdx.v2
-import step4.Player
-import step4.PlayerSystem
-import step4.SpriteStrategy
+import step4.*
 
 const val SPRITE = 1
 const val MAP = 2
@@ -55,20 +53,47 @@ class MyGame : Game() {
             Assets.assets_dungeon_sheet_png, 16, 16
         )
         val playerSprite = split.get(column = 19, row = 7)
+        val doorAnimation = split.animations(100f, 4 to 8, 3 to 8, 2 to 8, 1 to 8, 0 to 8)
+        val switchSprite = split.get(column = 4, row = 5)
 
         val map: TiledMap = assetManager[Assets.assets_dungeon_tmx]
 
         map.layers["objs"].scanObjects { x, y, objs ->
             val type: String by objs.properties
-            if (type == "player") {
-                val player = engine.createEntity().apply {
-                    add(Player())
-                    add(Position(x v2 y))
-                    add(Size(16 v2 16))
-                    add(Textured(texture = playerSprite))
-                    add(Render(SPRITE))
+            when (type) {
+                "player" -> {
+                    val player = engine.createEntity().apply {
+                        add(Player())
+                        add(Position(x v2 y))
+                        add(Size(16 v2 16))
+                        add(Textured(texture = playerSprite))
+                        add(Render(SPRITE))
+                    }
+                    engine.addEntity(player)
                 }
-                engine.addEntity(player)
+                "switch" -> {
+                    val switch = engine.createEntity().apply {
+                        add(Switch())
+                        add(Position(x v2 y))
+                        add(Size(16 v2 16))
+                        add(Textured(texture = switchSprite))
+                        add(Render(SPRITE))
+                        add(StateComponent())
+                    }
+                    engine.addEntity(switch)
+                }
+                "door" -> {
+                    val door = engine.createEntity().apply {
+                        add(Door())
+                        add(Position(x v2 y))
+                        add(Size(16 v2 16))
+                        add(Textured())
+                        add(Animated(animation = doorAnimation))
+                        add(Render(SPRITE))
+                        add(StateComponent())
+                    }
+                    engine.addEntity(door)
+                }
             }
         }
 

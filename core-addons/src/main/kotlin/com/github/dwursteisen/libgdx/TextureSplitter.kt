@@ -2,11 +2,17 @@ package com.github.dwursteisen.libgdx
 
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
 class TextureRegionMap(private val split: Array<Array<TextureRegion>>) {
     operator fun get(column: Int, row: Int): TextureRegion {
         return split[row][column]
+    }
+
+    fun animations(frameDuration: Float, vararg columnAndRow: Pair<Int, Int>): Animation<TextureRegion> {
+        val frames = columnAndRow.map { get(it.first, it.second) }
+        return Animation<TextureRegion>(frameDuration, *frames.toTypedArray())
     }
 }
 

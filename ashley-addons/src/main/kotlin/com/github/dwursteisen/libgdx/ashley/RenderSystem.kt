@@ -8,12 +8,16 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.maps.MapLayer
+import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile
 import com.badlogic.gdx.utils.viewport.Viewport
 
 interface RenderStrategy {
     fun zLevel(entity: Entity, delta: Float): Float
     fun render(entity: Entity, batch: SpriteBatch)
+    fun beginBatch() = Unit
+    fun endBatch() = Unit
 }
 
 inline fun <reified T : Component> RenderStrategy.get(): ComponentMapper<T> = ComponentMapper.getFor(T::class.java)
@@ -83,6 +87,10 @@ class MapLayerStrategy(private val viewport: Viewport) : RenderStrategy {
         cache = LayerRenderer(batch)
         return cache!!
     }
+
+    override fun beginBatch() {
+        AnimatedTiledMapTile.updateAnimationBaseTime()
+    }
 }
 
 class RenderSystem(
@@ -102,9 +110,20 @@ class RenderSystem(
         super.update(deltaTime)
         buffer.sortBy { zLevel(it, deltaTime) }
         batch.begin()
+        strategies.values.forEach(::beginBatch)
         batch.projectionMatrix = viewport.camera.combined
-        buffer.forEach { renderEntity(it) }
+        buffer.forEach(::renderEntity)
+        strategies.values.forEach(::endBatch)
         batch.end()
+    }
+
+    private fun beginBatch(strategy: RenderStrategy) {
+        strategy.beginBatch()
+    }
+
+
+    private fun endBatch(strategy: RenderStrategy) {
+        strategy.endBatch()
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
