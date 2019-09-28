@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Pool
 import com.github.dwursteisen.libgdx.ashley.fsm.EntityState
 import com.github.dwursteisen.libgdx.emptyGdxArray
+import kotlin.reflect.KClass
 
 /**
  * An entity can hold states using [StateComponent].
@@ -64,6 +65,10 @@ class Animated(
             time = 0f
             field = value
         }
+
+    fun finishAnimation() {
+        time = animation.animationDuration
+    }
 }
 
 /**

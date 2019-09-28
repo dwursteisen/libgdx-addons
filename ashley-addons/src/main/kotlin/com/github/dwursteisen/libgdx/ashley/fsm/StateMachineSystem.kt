@@ -14,6 +14,7 @@ import com.github.dwursteisen.libgdx.ashley.StateComponent
 import com.github.dwursteisen.libgdx.ashley.get
 import com.github.dwursteisen.libgdx.ashley.getNullable
 import ktx.log.debug
+import kotlin.reflect.KClass
 
 typealias Transition = StateMachine.(entity: Entity, event: EventData) -> Unit
 
@@ -125,6 +126,13 @@ abstract class StateMachineSystem(
 
     fun startsWith(transition: Transition) {
         onState(EntityState.STATE_NOP).default(transition)
+    }
+
+    fun startsWith(state: EntityState, block: (Entity) -> Unit) {
+        startsWith { entity, data ->
+            go(state, entity, data)
+            block(entity)
+        }
     }
 
     override fun go(newState: EntityState, entity: Entity) = go(newState, entity, eventBus.createEventData())
