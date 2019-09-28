@@ -10,7 +10,7 @@ class SpriteStrategy : TexturedStrategy() {
     private val position = get<Position>()
 
     override fun zLevel(entity: Entity, delta: Float): Float {
-        return entity[position].value.y
+        return (entity[position].value.y / -400) + 3 // <-- layer 3
     }
 
 }
