@@ -33,12 +33,18 @@ class MyGame : Game() {
         assetManager.finishLoading()
 
         // <2>
+        engine.addSystem(RenderSystem(viewport,
+            mapOf(SPRITE to SpriteStrategy())
+        ))
+        engine.addSystem(PlayerSystem())
+
+        // <3>
         val split = TextureSplitter(assetManager).split(
             Assets.assets_dungeon_sheet_png, 16, 16
         )
         val playerSprite = split.get(column = 19, row = 7)
 
-        // <3>
+        // <4>
         val player = engine.createEntity().apply {
             add(Player())
             add(Position())
@@ -47,12 +53,6 @@ class MyGame : Game() {
             add(Render(SPRITE))
         }
         engine.addEntity(player)
-
-        // <4>
-        engine.addSystem(RenderSystem(viewport,
-            mapOf(SPRITE to SpriteStrategy())
-        ))
-        engine.addSystem(PlayerSystem())
     }
 
     override fun render() {

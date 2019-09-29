@@ -178,9 +178,9 @@ The code of your game needs to be updated to add the entity engine and create yo
 include::samples/core/src/main/kotlin/step4/MyGame.kt[tags="body"]
 ----
 <1> Create an `EntityEngine`. Please note that you can use a `PooledEntityEngine` too;
-<2> Split the texture to get only a region. This region will be use to display the player;
-<3> Create your first entity. This entity is marked as the `Player`. Has a position, a size, a texture and marked as to be rendered;
-<4> Add all systems to the engine. For now, we will just add a system that will render all entities on screen;
+<2> Add all systems to the engine. For now, we will just add a system that will render all entities on screen;
+<3> Split the texture to get only a region. This region will be use to display the player;
+<4> Create your first entity. This entity is marked as the `Player`. Has a position, a size, a texture and marked as to be rendered;
 <5> In the render loop, update the engine.
 
 When creating the player, please note that only the component `Player` needs to be created.
@@ -209,13 +209,18 @@ Regarding the key that was pressed, the position of the entity is extracted.
 NOTE: The property component is accessed from the entity like it is a map.
 More information can be found in the <<ashley-addons>> section.
 
-=== React to events
-
-TIP: WIP
-
 === Create a state machine
 
-TIP: WIP
+A game can be composed of a lot of state machine.
+But what is a state machine? It's an entity that can be in state
+and regarding a certain event transition can goes in another state.
+
+A simple example could be a door: it can be open and goes in a close
+state if the player push a switch.
+
+image::media/create_game_06.png[]
+
+=== React to events
 
 === Package your game for Desktop
 
