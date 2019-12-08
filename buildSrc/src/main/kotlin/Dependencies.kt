@@ -8,7 +8,7 @@ object Version {
     val junit = "4.12"
     val gif = "1.4"
     val intellij = "0.5"
-    val download = "0.5"
+    val download = "67b35e4889"
     val kotlin = "1.3.30"
     val kotlinpoet = "1.2.0"
 }
@@ -32,6 +32,6 @@ object TestDependencies {
 object Plugins {
     val kotlin_gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.kotlin}"
     val intellij = "org.jetbrains.gradle.plugin.idea-ext:org.jetbrains.gradle.plugin.idea-ext.gradle.plugin:${Version.intellij}"
-    val download = "fi.linuxbox.gradle:gradle-download:${Version.download}"
+    val download = "com.github.dwursteisen:gradle-download-worker:${Version.download}"
     val android = "com.android.tools.build:gradle:${Version.android}"
 }
